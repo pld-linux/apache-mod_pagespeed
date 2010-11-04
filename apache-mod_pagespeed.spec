@@ -8,6 +8,7 @@
 #   /usr/include/c++/4.5.1/bits/stl_pair.h:77:11: error: ‘std::pair<_T1, _T2>::second’ has incomplete type
 #   ./net/instaweb/util/public/cache_interface.h:28:7: error: forward declaration of ‘struct net_instaweb::SharedString’
 #   make[1]: *** [out/Release/obj.target/mod_pagespeed_test/net/instaweb/util/cache_fetcher_test.o] Error 1
+#   http://pastebin.com/Eu88BPSQ
 # - sizeof(apr_int32_t) == sizeof(apr_int64_t) on 32bit (!?!):
 #   third_party/apache/apr/src/strings/apr_snprintf.c: In function 'conv_os_thread_t':
 #   third_party/apache/apr/src/strings/apr_snprintf.c:500:5: error: duplicate case value
