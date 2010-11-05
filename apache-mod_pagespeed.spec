@@ -26,13 +26,12 @@
 #  "gflags_root": "http://google-gflags.googlecode.com/svn/tags/gflags-1.3/src",
 #  "google_sparsehash_root": "http://google-sparsehash.googlecode.com/svn/tags/sparsehash-1.8.1/src",
 %define		svndate	20101104
-%define		rel		0.1
 %define		mod_name	pagespeed
 %define 	apxs		%{_sbindir}/apxs
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
 Version:	0.9.0.0
-Release:	0.1
+Release:	0.3
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 # wget -c http://src.chromium.org/svn/trunk/tools/depot_tools.tar.gz
@@ -57,7 +56,10 @@ Suggests:	apache-mod_deflate
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_pkglibdir	%(%{apxs} -q LIBEXECDIR 2>/dev/null)
-%define		_sysconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)/conf.d
+%define		_pkgrootdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)
+%define		_sysconfdir	%{_pkgrootdir}/conf.d
+%define		htdocsdir	%(%{apxs} -q htdocsdir 2>/dev/null)
+%define		cachedir	%(%{apxs} -q proxycachedir 2>/dev/null)/mod_%{mod_name}
 
 %description
 mod_pagespeed automates the application of those rules in an Apache
@@ -68,12 +70,6 @@ site is maintained.
 
 %prep
 %setup -q -n modpagespeed
-
-cat > apache.conf <<EOF
-LoadModule %{mod_name}_module	modules/mod_%{mod_name}.so > apache.conf
-
-$(cat src/install/common/pagespeed.conf.template)
-EOF
 
 %build
 # re-gen makefiles
@@ -101,9 +97,23 @@ EOF
 
 %install
 rm -rf $RPM_BUILD_ROOT
+%{__make} -j1 -C src/install staging \
+	HOSTNAME=localhost \
+	APACHE_ROOT=%{_pkgrootdir} \
+	APACHE_MODULES=%{_pkglibdir} \
+	APACHE_DOC_ROOT=%{htdocsdir} \
+	MOD_PAGESPEED_FILE_ROOT=%{cachedir} \
+	STAGING_DIR=staging
+
+cd staging
 install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}}
 install -p mod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}
-cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/90_mod_%{mod_name}.conf
+install -d $RPM_BUILD_ROOT%{cachedir}/{cache,files}
+cat > $RPM_BUILD_ROOT%{_sysconfdir}/90_mod_%{mod_name}.conf <<EOF
+LoadModule %{mod_name}_module	modules/mod_%{mod_name}.so
+
+$(cat pagespeed.conf)
+EOF
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -120,3 +130,7 @@ fi
 %defattr(644,root,root,755)
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*_mod_%{mod_name}.conf
 %attr(755,root,root) %{_pkglibdir}/mod_%{mod_name}.so
+
+%dir %attr(710,root,http) %{cachedir}
+%dir %attr(770,root,http) %{cachedir}/cache
+%dir %attr(770,root,http) %{cachedir}/files
