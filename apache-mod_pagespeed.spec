@@ -52,6 +52,7 @@ BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache(modules-api) = %apache_modules_api
+Requires:	apache-mod_authz_host
 Suggests:	apache-mod_deflate
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
