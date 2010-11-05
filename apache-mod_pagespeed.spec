@@ -35,14 +35,13 @@ Version:	0.9.0.0
 Release:	0.1
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
-Source10:	http://src.chromium.org/svn/trunk/tools/depot_tools.tar.gz
-# Source10-md5:	56a3c406fcb645eaaa608a257f06a90d
+# wget -c http://src.chromium.org/svn/trunk/tools/depot_tools.tar.gz
 # test -d depot_tools || tar xzf depot_tools.tar.gz
 # install -d modpagespeed
 # cd modpagespeed
 # test -f .gclient || ../depot_tools/gclient config http://modpagespeed.googlecode.com/svn/trunk/src
 # ../depot_tools/gclient sync
-# Populate the LASTCHANGE file template as we no longer have the VCS files at this point
+# Populate the LASTCHANGE file template as we will not include VCS info in tarball
 # (cd src/build && svnversion > LASTCHANGE.in)
 # cd ..
 # tar -cjf modpagespeed-$(date +%Y%m%d).tar.bz2 --exclude-vcs modpagespeed
@@ -68,7 +67,7 @@ by Page Speed can be used without having to change the way the web
 site is maintained.
 
 %prep
-%setup -q -n modpagespeed -a10
+%setup -q -n modpagespeed
 
 cat > apache.conf <<EOF
 LoadModule %{mod_name}_module	modules/mod_%{mod_name}.so > apache.conf
@@ -77,10 +76,14 @@ $(cat src/install/common/pagespeed.conf.template)
 EOF
 
 %build
-export PATH=$PATH:$(pwd)/depot_tools
 # re-gen makefiles
-gclient runhooks
+cd src
+CC="%{__cc}" \
+CXX="%{__cxx}" \
+%{__python} build/gyp_chromium --format=make build/all.gyp
+cd ..
 
+# makefile wrapper so we could just invoke "make" from shell
 cat > Makefile <<'EOF'
 default:
 	$(MAKE) -C src \
