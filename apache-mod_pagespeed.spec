@@ -2,6 +2,7 @@
 # - use make < 3.82 (from th-obsolete) to hack on code, because 3.82
 #   invalidates built objects and it's annoying to wait if all is recompiled
 #   each time you invoke make
+# - http://wiki.mediatemple.net/w/(dv)_HOWTO:_Install_mod_pagespeed
 # TODO
 # - c++ errors on 64bit/32bit gcc 4.5.1-4:
 #   /usr/include/c++/4.5.1/bits/stl_map.h:87:5:   instantiated from here
@@ -24,7 +25,6 @@
 #  "opencv_src": "https://code.ros.org/svn/opencv/tags/2.1",
 #  "gflags_root": "http://google-gflags.googlecode.com/svn/tags/gflags-1.3/src",
 #  "google_sparsehash_root": "http://google-sparsehash.googlecode.com/svn/tags/sparsehash-1.8.1/src",
-
 %define		svndate	20101104
 %define		rel		0.1
 %define		mod_name	pagespeed
@@ -35,10 +35,12 @@ Version:	0.9.0.0
 Release:	0.1
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
-# svn co http://src.chromium.org/svn/trunk/tools/depot_tools
+Source10:	http://src.chromium.org/svn/trunk/tools/depot_tools.tar.gz
+# Source10-md5:	56a3c406fcb645eaaa608a257f06a90d
+# test -d depot_tools || tar xzf depot_tools.tar.gz
 # install -d modpagespeed
 # cd modpagespeed
-# ../depot_tools/gclient config http://modpagespeed.googlecode.com/svn/trunk/src
+# test -f .gclient || ../depot_tools/gclient config http://modpagespeed.googlecode.com/svn/trunk/src
 # ../depot_tools/gclient sync
 # Populate the LASTCHANGE file template as we no longer have the VCS files at this point
 # (cd src/build && svnversion > LASTCHANGE.in)
@@ -66,7 +68,7 @@ by Page Speed can be used without having to change the way the web
 site is maintained.
 
 %prep
-%setup -q -n modpagespeed
+%setup -q -n modpagespeed -a10
 
 cat > apache.conf <<EOF
 LoadModule %{mod_name}_module	modules/mod_%{mod_name}.so > apache.conf
@@ -75,6 +77,10 @@ $(cat src/install/common/pagespeed.conf.template)
 EOF
 
 %build
+export PATH=$PATH:$(pwd)/depot_tools
+# re-gen makefiles
+gclient runhooks
+
 cat > Makefile <<'EOF'
 default:
 	$(MAKE) -C src \
