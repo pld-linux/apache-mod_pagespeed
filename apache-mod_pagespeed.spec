@@ -103,7 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 	MOD_PAGESPEED_FILE_ROOT=%{cachedir} \
 	STAGING_DIR=staging
 
-cd staging
+cd src/install/staging
 install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}}
 install -p mod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}
 install -d $RPM_BUILD_ROOT%{cachedir}/{cache,files}
