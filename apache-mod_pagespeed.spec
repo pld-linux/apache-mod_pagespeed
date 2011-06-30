@@ -1,9 +1,15 @@
+#
+# Conditional build:
+%bcond_with	verbose		# verbose build (V=1)
+
 # NOTE
 # - use make < 3.82 (from th-obsolete) to hack on code, because 3.82
 #   invalidates built objects and it's annoying to wait if all is recompiled
 #   each time you invoke make
+# - http://code.google.com/p/modpagespeed/wiki/HowToBuild
 # - http://wiki.mediatemple.net/w/(dv)_HOWTO:_Install_mod_pagespeed
 # TODO
+# - add unit tests running
 # - c++ errors on 64bit/32bit gcc 4.5.1-4:
 #   /usr/include/c++/4.5.1/bits/stl_map.h:87:5:   instantiated from here
 #   /usr/include/c++/4.5.1/bits/stl_pair.h:77:11: error: ‘std::pair<_T1, _T2>::second’ has incomplete type
@@ -25,31 +31,22 @@
 #  "opencv_src": "https://code.ros.org/svn/opencv/tags/2.1",
 #  "gflags_root": "http://google-gflags.googlecode.com/svn/tags/gflags-1.3/src",
 #  "google_sparsehash_root": "http://google-sparsehash.googlecode.com/svn/tags/sparsehash-1.8.1/src",
-%define		svndate	20101104
+# - use only source for modpagespeed if system headers are used (remove copies from tarball)
 %define		mod_name	pagespeed
 %define 	apxs		%{_sbindir}/apxs
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
-Version:	0.9.0.0
-Release:	0.3
+Version:	0.9.17.7
+Release:	0.4
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
-# wget -c http://src.chromium.org/svn/trunk/tools/depot_tools.tar.gz
-# test -d depot_tools || tar xzf depot_tools.tar.gz
-# install -d modpagespeed
-# cd modpagespeed
-# test -f .gclient || ../depot_tools/gclient config http://modpagespeed.googlecode.com/svn/trunk/src
-# ../depot_tools/gclient sync
-# Populate the LASTCHANGE file template as we will not include VCS info in tarball
-# (cd src/build && svnversion > LASTCHANGE.in)
-# cd ..
-# tar -cjf modpagespeed-$(date +%Y%m%d).tar.bz2 --exclude-vcs modpagespeed
-# ../dropin modpagespeed-$(date +%Y%m%d).tar.bz2 &
-Source0:	modpagespeed-%{svndate}.tar.bz2
-# Source0-md5:	1640f3c7226ffd3ba4a67f0064241495
+Source0:	modpagespeed-%{version}.tar.bz2
+# Source0-md5:	d4a49e422da63d6487afbec731432e21
 URL:		http://code.google.com/p/modpagespeed/
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
+BuildRequires:	libstdc++-devel >= 6:4.2
+BuildRequires:	python-devel >= 1:2.6
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache(modules-api) = %apache_modules_api
 Requires:	apache-mod_authz_host
