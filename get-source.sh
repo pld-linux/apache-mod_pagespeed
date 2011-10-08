@@ -6,18 +6,11 @@
 pkg=modpagespeed
 baseurl=http://modpagespeed.googlecode.com/svn
 # leave empty to use latest tag, or "trunk" for trunk
-version=0.9.18.9
+version=
 spec=apache-mod_pagespeed.spec
 
 # abort on errors
 set -e
-
-# gclient needs python 2.6
-if python -c "import sys; sys.exit(sys.version[:3] > '2.6')"; then
-	echo >&2 "Need python >= 2.6 for gclient"
-	exit 1
-fi
-
 # work in package dir
 dir=$(dirname "$0")
 cd "$dir"
@@ -29,7 +22,7 @@ fi
 if [ -z "$version" ]; then
 	echo "Looking for latest version..."
 	version=$(svn ls $baseurl/tags/ | sort -V | tail -n1)
-	version=${version#/}
+	version=${version%/}
 fi
 
 if [ "$version" = "trunk" ]; then
@@ -40,6 +33,12 @@ else
 	echo "Version: $version"
 	svnurl=$baseurl/tags/$version/src
 	tarball=$pkg-$version.tar.bz2
+fi
+
+# gclient needs python 2.6
+if python -c "import sys; sys.exit(sys.version[:3] > '2.6')"; then
+	echo >&2 "Need python >= 2.6 for gclient"
+	exit 1
 fi
 
 wget -c http://src.chromium.org/svn/trunk/tools/depot_tools.tar.gz
