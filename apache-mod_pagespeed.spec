@@ -31,6 +31,14 @@
 #  "opencv_src": "https://code.ros.org/svn/opencv/tags/2.1",
 #  "gflags_root": "http://google-gflags.googlecode.com/svn/tags/gflags-1.3/src",
 #  "google_sparsehash_root": "http://google-sparsehash.googlecode.com/svn/tags/sparsehash-1.8.1/src",
+
+%if "%{pld_release}" == "ac"
+# add suffix, but allow ccache, etc in ~/.rpmmacros
+%{expand:%%define	__cc	%(echo '%__cc' | sed -e 's,-gcc,-gcc4,')}
+%{expand:%%define	__cxx	%(echo '%__cxx' | sed -e 's,-g++,-g++4,')}
+%{expand:%%define	__cpp	%(echo '%__cpp' | sed -e 's,-gcc,-gcc4,')}
+%endif
+
 # - use only source for modpagespeed if system headers are used (remove copies from tarball)
 %define		mod_name	pagespeed
 %define 	apxs		%{_sbindir}/apxs
@@ -45,9 +53,13 @@ Source0:	modpagespeed-%{version}.tar.bz2
 URL:		http://code.google.com/p/modpagespeed/
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
-BuildRequires:	libstdc++-devel >= 6:4.2
+BuildRequires:	libstdc++-devel >= 5:4.0
 BuildRequires:	python-devel >= 1:2.6
 BuildRequires:	rpmbuild(macros) >= 1.268
+# gcc4 might be installed, but not current __cc
+%if "%(echo %{cc_version} | cut -d. -f1,2)" < "4.0"
+BuildRequires:	__cc >= 4.0
+%endif
 Requires:	apache(modules-api) = %apache_modules_api
 Requires:	apache-mod_authz_host
 Suggests:	apache-mod_deflate
