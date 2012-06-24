@@ -41,8 +41,14 @@ if python -c "import sys; sys.exit(sys.version[:3] > '2.6')"; then
 	exit 1
 fi
 
-wget -c http://src.chromium.org/svn/trunk/tools/depot_tools.tar.gz
-test -d depot_tools || tar xzf depot_tools.tar.gz
+#wget -c https://chrome-browser.googlecode.com/svn-history/r37527/trunk/tools/depot_tools.tar.gz
+wget -c http://distfiles.pld-linux.org/by-md5/5/6/56a3c406fcb645eaaa608a257f06a90d/depot_tools.tar.gz
+test -d depot_tools || {
+	tar xzf depot_tools.tar.gz
+	cd depot_tools
+	svn upgrade
+	cd ..
+}
 
 install -d $pkg
 cd $pkg

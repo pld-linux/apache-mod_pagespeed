@@ -31,6 +31,7 @@
 #  "opencv_src": "https://code.ros.org/svn/opencv/tags/2.1",
 #  "gflags_root": "http://google-gflags.googlecode.com/svn/tags/gflags-1.3/src",
 #  "google_sparsehash_root": "http://google-sparsehash.googlecode.com/svn/tags/sparsehash-1.8.1/src",
+#  protobuf_lite
 
 %if "%{pld_release}" == "ac"
 # add suffix, but allow ccache, etc in ~/.rpmmacros
@@ -44,16 +45,17 @@
 %define 	apxs		%{_sbindir}/apxs
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
-Version:	0.9.18.9
-Release:	0.4
+Version:	0.10.22.4
+Release:	0.5
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.bz2
-# Source0-md5:	0a203c836c904db1b320ef6aae9a3661
-URL:		http://code.google.com/p/modpagespeed/
+# Source0-md5:	e984c38493506fa9c4997513b7f016cb
+Source1:	get-source.sh
+URL:		https://developers.google.com/speed/pagespeed/
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
-BuildRequires:	libstdc++-devel >= 5:4.0
+BuildRequires:	libstdc++-devel >= 5:4.1
 BuildRequires:	python-devel >= 1:2.6
 BuildRequires:	rpmbuild(macros) >= 1.268
 # gcc4 might be installed, but not current __cc
