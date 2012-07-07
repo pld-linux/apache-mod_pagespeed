@@ -26,11 +26,11 @@
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
 Version:	0.10.22.4
-Release:	0.9
+Release:	0.10
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.bz2
-# Source0-md5:	9c9a8b091ee8d37253ee35878c3390e6
+# Source0-md5:	5a05827b25b66cdfb68bdce163f13e37
 Source1:	get-source.sh
 Patch0:		system-libs.patch
 Patch1:		gcc-headers.patch

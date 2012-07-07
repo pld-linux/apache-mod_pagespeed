@@ -8,12 +8,18 @@ baseurl=http://modpagespeed.googlecode.com/svn
 # leave empty to use latest tag, or "trunk" for trunk
 version=
 spec=apache-mod_pagespeed.spec
+force=0
 
 # abort on errors
 set -e
 # work in package dir
 dir=$(dirname "$0")
 cd "$dir"
+
+if [[ "$1" = *force ]]; then
+	force=1
+	shift
+fi
 
 if [ "$1" ]; then
 	version=$1
@@ -35,7 +41,7 @@ else
 	tarball=$pkg-$version.tar.bz2
 fi
 
-if [ -f $tarball ]; then
+if [ -f $tarball -a $force != 1 ]; then
 	echo "Tarball $tarball already exists"
 	exit 0
 fi
@@ -56,13 +62,22 @@ test -d depot_tools || {
 	chmod a+x depot_tools/gclient depot_tools/update_depot_tools
 }
 
+topdir=${PWD:-($pwd)}
+gclient=$topdir/gclient.conf
 install -d $pkg
 cd $pkg
-# force update
-rm -f .gclient
 
-../depot_tools/gclient config $svnurl
-../depot_tools/gclient sync
+if [ ! -f .gclient ]; then
+	if [ ! -f $gclient ]; then
+		../depot_tools/gclient config $svnurl --gclientfile=$gclient
+	fi
+	cp $gclient .gclient
+fi
+
+# emulate gclient config, preserving our deps
+sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
+
+../depot_tools/gclient sync -v
 
 # Populate the LASTCHANGE file template as we will not include VCS info in tarball
 (cd src/build && svnversion > LASTCHANGE.in)
