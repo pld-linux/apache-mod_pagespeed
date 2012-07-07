@@ -35,6 +35,11 @@ else
 	tarball=$pkg-$version.tar.bz2
 fi
 
+if [ -f $tarball ]; then
+	echo "Tarball $tarball already exists"
+	exit 0
+fi
+
 # gclient needs python 2.6
 if python -c "import sys; sys.exit(sys.version[:3] > '2.6')"; then
 	echo >&2 "Need python >= 2.6 for gclient"
