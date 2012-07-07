@@ -1,11 +1,8 @@
 #
 # Conditional build:
-%bcond_with	verbose		# verbose build (V=1)
+%bcond_without	verbose		# verbose build (V=1)
 
 # NOTE
-# - use make < 3.82 (from th-obsolete) to hack on code, because 3.82
-#   invalidates built objects and it's annoying to wait if all is recompiled
-#   each time you invoke make
 # - http://code.google.com/p/modpagespeed/wiki/HowToBuild
 # - http://wiki.mediatemple.net/w/(dv)_HOWTO:_Install_mod_pagespeed
 # TODO
@@ -23,12 +20,10 @@
 #   third_party/apache/apr/src/strings/apr_snprintf.c: In function 'conv_os_thread_t_hex':
 #   third_party/apache/apr/src/strings/apr_snprintf.c:671:5: error: duplicate case value
 #   third_party/apache/apr/src/strings/apr_snprintf.c:669:5: error: previously used here
+# - use only source for modpagespeed if system headers are used (remove copies from tarball)
 # - possible sysdeps (uses release tags)
 #  "serf_src": "http://serf.googlecode.com/svn/tags/0.3.1",
-#  "apr_src": "http://svn.apache.org/repos/asf/apr/apr/tags/1.4.2",
-#  "aprutil_src": "http://svn.apache.org/repos/asf/apr/apr-util/tags/1.3.9",
 #  "apache_httpd_src": "http://svn.apache.org/repos/asf/httpd/httpd/tags/2.2.15",
-#  "opencv_src": "https://code.ros.org/svn/opencv/tags/2.1",
 #  "gflags_root": "http://google-gflags.googlecode.com/svn/tags/gflags-1.3/src",
 #  "google_sparsehash_root": "http://google-sparsehash.googlecode.com/svn/tags/sparsehash-1.8.1/src",
 #  protobuf_lite
@@ -40,24 +35,42 @@
 %{expand:%%define	__cpp	%(echo '%__cpp' | sed -e 's,-gcc,-gcc4,')}
 %endif
 
-# - use only source for modpagespeed if system headers are used (remove copies from tarball)
 %define		mod_name	pagespeed
 %define 	apxs		%{_sbindir}/apxs
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
 Version:	0.10.22.4
-Release:	0.5
+Release:	0.7
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.bz2
-# Source0-md5:	e984c38493506fa9c4997513b7f016cb
+# Source0-md5:	9c9a8b091ee8d37253ee35878c3390e6
 Source1:	get-source.sh
+Patch0:		system-libs.patch
+Patch1:		gcc-headers.patch
 URL:		https://developers.google.com/speed/pagespeed/
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
+BuildRequires:	dbus-glib-devel
+BuildRequires:	fontconfig-devel
+BuildRequires:	freetype-devel
+BuildRequires:	glib2-devel
+BuildRequires:	gtk+2-devel
+BuildRequires:	ibus-devel >= 1.3.99.20110425
+BuildRequires:	libgcrypt-devel
+BuildRequires:	libgnome-keyring-devel
+BuildRequires:	libjpeg-devel
+BuildRequires:	libpng-devel
+BuildRequires:	libselinux-devel
 BuildRequires:	libstdc++-devel >= 5:4.1
+BuildRequires:	opencv-devel
+BuildRequires:	openssl-devel
 BuildRequires:	python-devel >= 1:2.6
 BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXext-devel
+BuildRequires:	xorg-lib-libXi-devel
+BuildRequires:	zlib-devel
 # gcc4 might be installed, but not current __cc
 %if "%(echo %{cc_version} | cut -d. -f1,2)" < "4.0"
 BuildRequires:	__cc >= 4.0
@@ -82,13 +95,27 @@ site is maintained.
 
 %prep
 %setup -q -n modpagespeed
+%patch0 -p1
+%patch1 -p1
 
 %build
 # re-gen makefiles
 cd src
 CC="%{__cc}" \
 CXX="%{__cxx}" \
-%{__python} build/gyp_chromium --format=make build/all.gyp
+%{__python} build/gyp_chromium --format=make build/all.gyp \
+	-Dlinux_link_gsettings=1 \
+	-Dlinux_link_gnome_keyring=1 \
+	-Duse_gnome_keyring=1 \
+	-Duse_openssl=1 \
+	-Duse_system_apache_dev=1 \
+	-Duse_system_libjpeg=1 \
+	-Duse_system_libpng=1 \
+	-Duse_system_opencv=1 \
+	-Duse_system_zlib=1 \
+	-Duse_ibus=1 \
+	%{nil}
+
 cd ..
 
 # makefile wrapper so we could just invoke "make" from shell
@@ -104,8 +131,12 @@ default:
 	LINK.host="%{__cxx}" \
 	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	CXXFLAGS="%{rpmcxxflags} %{rpmcppflags}" \
+	$(MAKEFLAGS) \
 EOF
 %{__make}
+
+# install.gyp needs fixing, not to install ap24.so, for now duplicate
+ln -f src/out/Release/libmod_pagespeed{,_ap24}.so
 
 %install
 rm -rf $RPM_BUILD_ROOT
