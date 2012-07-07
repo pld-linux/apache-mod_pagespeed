@@ -67,17 +67,17 @@ gclient=$topdir/gclient.conf
 install -d $pkg
 cd $pkg
 
-if [ ! -f .gclient ]; then
-	if [ ! -f $gclient ]; then
-		../depot_tools/gclient config $svnurl --gclientfile=$gclient
-	fi
-	cp $gclient .gclient
+if [ ! -f $gclient ]; then
+	# create initial config that can be later modified
+	../depot_tools/gclient config $svnurl --gclientfile=$gclient
 fi
+
+cp $gclient .gclient
 
 # emulate gclient config, preserving our deps
 sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
 
-../depot_tools/gclient sync -v
+../depot_tools/gclient sync --nohooks -v
 
 # Populate the LASTCHANGE file template as we will not include VCS info in tarball
 (cd src/build && svnversion > LASTCHANGE.in)
