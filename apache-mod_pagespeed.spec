@@ -26,11 +26,11 @@
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
 Version:	0.10.22.4
-Release:	0.10
+Release:	0.11
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.bz2
-# Source0-md5:	5a05827b25b66cdfb68bdce163f13e37
+# Source0-md5:	447f11184ab8b82f59b07a3e3b99425a
 Source1:	get-source.sh
 Patch0:		system-libs.patch
 Patch1:		gcc-headers.patch
@@ -43,6 +43,7 @@ BuildRequires:	freetype-devel
 BuildRequires:	glib2-devel
 BuildRequires:	gperf
 BuildRequires:	gtk+2-devel
+BuildRequires:	python-gyp >= 1-1175
 BuildRequires:	libgcrypt-devel
 BuildRequires:	libgnome-keyring-devel
 BuildRequires:	libjpeg-devel
@@ -107,8 +108,9 @@ cd ..
 
 # makefile wrapper so we could just invoke "make" from shell
 cat > Makefile <<'EOF'
+# target names from build/all.gyp
 default:
-	$(MAKE) -C src \
+	$(MAKE) -C src mod_pagespeed \
 	BUILDTYPE=%{!?debug:Release}%{?debug:Debug} \
 	%{?with_verbose:V=1} \
 	CC="%{__cc}" \
