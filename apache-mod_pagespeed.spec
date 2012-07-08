@@ -37,27 +37,18 @@ Patch1:		gcc-headers.patch
 URL:		https://developers.google.com/speed/pagespeed/
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
-BuildRequires:	dbus-glib-devel
-BuildRequires:	fontconfig-devel
-BuildRequires:	freetype-devel
 BuildRequires:	glib2-devel
 BuildRequires:	gperf
-BuildRequires:	gtk+2-devel
-BuildRequires:	python-gyp >= 1-1175
-BuildRequires:	libgcrypt-devel
-BuildRequires:	libgnome-keyring-devel
 BuildRequires:	libjpeg-devel
-BuildRequires:	libpng-devel
 BuildRequires:	libselinux-devel
 BuildRequires:	libstdc++-devel >= 5:4.1
 BuildRequires:	opencv-devel
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	python-devel >= 1:2.6
+BuildRequires:	python-gyp
 BuildRequires:	rpmbuild(macros) >= 1.268
-BuildRequires:	xorg-lib-libX11-devel
-BuildRequires:	xorg-lib-libXext-devel
-BuildRequires:	xorg-lib-libXi-devel
+BuildRequires:	util-linux
 BuildRequires:	zlib-devel
 # gcc4 might be installed, but not current __cc
 %if "%(echo %{cc_version} | cut -d. -f1,2)" < "4.0"
@@ -93,9 +84,6 @@ cd src
 CC="%{__cc}" \
 CXX="%{__cxx}" \
 %{__python} build/gyp_chromium --format=make build/all.gyp \
-	-Dlinux_link_gsettings=1 \
-	-Dlinux_link_gnome_keyring=1 \
-	-Duse_gnome_keyring=1 \
 	-Duse_openssl=1 \
 	-Duse_system_apache_dev=1 \
 	-Duse_system_libjpeg=1 \
