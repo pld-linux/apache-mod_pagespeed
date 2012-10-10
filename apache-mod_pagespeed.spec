@@ -7,7 +7,6 @@
 # - http://wiki.mediatemple.net/w/(dv)_HOWTO:_Install_mod_pagespeed
 # TODO
 # - add unit tests running
-# - use only source for modpagespeed if system headers are used (remove copies from tarball)
 # - possible sysdeps (uses release tags)
 #  "serf_src": "http://serf.googlecode.com/svn/tags/0.3.1",
 #  "gflags_root": "http://google-gflags.googlecode.com/svn/tags/gflags-1.3/src",
@@ -95,6 +94,9 @@ CXX="%{__cxx}" \
 	-Duse_system_libpng=1 \
 	-Duse_system_opencv=1 \
 	-Duse_system_zlib=1 \
+	-Dsystem_include_path_apr=%{_includedir}/apr \
+	-Dsystem_include_path_aprutil=%{_includedir}/apr-util \
+	-Dsystem_include_path_httpd=%{_includedir}/apache \
 	%{nil}
 
 cd ..
