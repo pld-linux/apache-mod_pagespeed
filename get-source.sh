@@ -2,6 +2,9 @@
 # Usage:
 # ./get-source.sh
 # Author: Elan Ruusamäe <glen@pld-linux.org>
+#
+# To see release notes, see this page:
+# https://developers.google.com/speed/docs/mod_pagespeed/release_notes
 
 pkg=modpagespeed
 baseurl=http://modpagespeed.googlecode.com/svn
@@ -34,11 +37,11 @@ fi
 if [ "$version" = "trunk" ]; then
 	echo "Using trunk"
 	svnurl=$baseurl/trunk/src
-	tarball=$pkg-$(date +%Y%m%d).tar.bz2
+	tarball=$pkg-$(date +%Y%m%d).tar.xz
 else
 	echo "Version: $version"
 	svnurl=$baseurl/tags/$version/src
-	tarball=$pkg-$version.tar.bz2
+	tarball=$pkg-$version.tar.xz
 fi
 
 if [ -f $tarball -a $force != 1 ]; then
@@ -54,6 +57,8 @@ fi
 
 # http://www.chromium.org/developers/how-tos/install-depot-tools
 test -d depot_tools || {
+	# could also checkout:
+	# svn co http://src.chromium.org/svn/trunk/tools/depot_tools
 	wget -c https://src.chromium.org/svn/trunk/tools/depot_tools.zip
 	unzip -qq depot_tools.zip
 #	cd depot_tools
@@ -83,6 +88,6 @@ sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
 (cd src/build && svnversion > LASTCHANGE.in)
 cd ..
 
-tar -cjf $tarball --exclude-vcs $pkg
+tar -cJf $tarball --exclude-vcs $pkg
 ../md5 $spec
 ../dropin $tarball &

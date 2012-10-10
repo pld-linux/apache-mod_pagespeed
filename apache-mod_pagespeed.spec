@@ -25,12 +25,12 @@
 %define 	apxs		%{_sbindir}/apxs
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
-Version:	0.10.22.4
+Version:	0.10.22.7
 Release:	1
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
-Source0:	modpagespeed-%{version}.tar.bz2
-# Source0-md5:	447f11184ab8b82f59b07a3e3b99425a
+Source0:	modpagespeed-%{version}.tar.xz
+# Source0-md5:	1c67625812d18899ce6a47da069c6043
 Source1:	get-source.sh
 Patch0:		system-libs.patch
 Patch1:		gcc-headers.patch
@@ -42,13 +42,18 @@ BuildRequires:	gperf
 BuildRequires:	libjpeg-devel
 BuildRequires:	libselinux-devel
 BuildRequires:	libstdc++-devel >= 5:4.1
-BuildRequires:	opencv-devel
+BuildRequires:	opencv-devel >= 2.3.1
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	python-devel >= 1:2.6
-BuildRequires:	python-gyp
+# This version of gyp is new enough that it knows to use make for Linux 3.x
+# and FreeBSD, but old enough that 'type': 'settings' works and
+# LINKER_SUPPORTS_ICF hasn't been removed yet.
+BuildRequires:	python-gyp >= 1-1175
 BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	util-linux
+BuildRequires:	xz
 BuildRequires:	zlib-devel
 # gcc4 might be installed, but not current __cc
 %if "%(echo %{cc_version} | cut -d. -f1,2)" < "4.0"
