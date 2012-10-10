@@ -85,7 +85,7 @@ sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
 ../depot_tools/gclient sync --nohooks -v
 
 # Populate the LASTCHANGE file template as we will not include VCS info in tarball
-(cd src/build && svnversion > LASTCHANGE.in)
+(cd src && svnversion > LASTCHANGE.in)
 cd ..
 
 tar -cJf $tarball --exclude-vcs $pkg
