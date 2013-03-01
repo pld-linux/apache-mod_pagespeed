@@ -30,7 +30,7 @@ fi
 
 if [ -z "$version" ]; then
 	echo "Looking for latest version..."
-	version=$(svn ls $baseurl/tags/ | sort -V | tail -n1)
+	version=$(svn ls $baseurl/tags/ | grep '^[0-9]' | sort -V | tail -n1)
 	version=${version%/}
 fi
 
