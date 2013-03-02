@@ -24,12 +24,12 @@
 %define 	apxs		%{_sbindir}/apxs
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
-Version:	0.10.22.7
-Release:	2
+Version:	1.3.25.3
+Release:	0.3
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
-# Source0-md5:	1c67625812d18899ce6a47da069c6043
+# Source0-md5:	7df9bf6b1aacec28d81b1678192652ca
 Source1:	get-source.sh
 Patch0:		system-libs.patch
 Patch1:		gcc-headers.patch
@@ -78,16 +78,18 @@ by Page Speed can be used without having to change the way the web
 site is maintained.
 
 %prep
-%setup -q -n modpagespeed
-%patch0 -p1
-%patch1 -p1
+%setup -q -n modpagespeed-%{version}
+%patch0 -p2
+%patch1 -p2
 
 %build
 # re-gen makefiles
-cd src
 CC="%{__cc}" \
 CXX="%{__cxx}" \
-%{__python} build/gyp_chromium --format=make build/all.gyp \
+%{__python} build/gyp_chromium \
+	--format=make \
+	--depth=. \
+	build/all.gyp \
 	-Duse_openssl=1 \
 	-Duse_system_apache_dev=1 \
 	-Duse_system_libjpeg=1 \
@@ -99,13 +101,7 @@ CXX="%{__cxx}" \
 	-Dsystem_include_path_httpd=%{_includedir}/apache \
 	%{nil}
 
-cd ..
-
-# makefile wrapper so we could just invoke "make" from shell
-cat > Makefile <<'EOF'
-# target names from build/all.gyp
-default:
-	$(MAKE) -C src mod_pagespeed \
+%{__make} mod_pagespeed \
 	BUILDTYPE=%{!?debug:Release}%{?debug:Debug} \
 	%{?with_verbose:V=1} \
 	CC="%{__cc}" \
@@ -115,23 +111,21 @@ default:
 	LINK.host="%{__cxx}" \
 	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	CXXFLAGS="%{rpmcxxflags} %{rpmcppflags}" \
-	$(MAKEFLAGS) \
-EOF
-%{__make}
+	%{nil}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir},%{cachedir}/{cache,files}}
-%{__make} -j1 -C src/install staging_except_module \
-	HOSTNAME=localhost \
+%{__make} -j1 -C install staging_except_module \
 	APACHE_ROOT=%{_pkgrootdir} \
 	APACHE_MODULES=modules \
 	APACHE_DOC_ROOT=%{htdocsdir} \
-	MOD_PAGESPEED_FILE_ROOT=%{cachedir} \
+	MOD_PAGESPEED_CACHE=%{cachedir} \
+	MOD_PAGESPEED_STATS_LOG=/var/log/httpd/mod_pagespeed_stats.log \
 	STAGING_DIR=staging
 
-install -p src/out/Release/libmod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}/mod_%{mod_name}.so
-cd src/install/staging
+install -p out/Release/libmod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}/mod_%{mod_name}.so
+cd install/staging
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/90_mod_%{mod_name}.conf <<EOF
 LoadModule %{mod_name}_module	modules/mod_%{mod_name}.so
 
@@ -158,6 +152,4 @@ fi
 %attr(755,root,root) %{_pkglibdir}/mod_%{mod_name}.so
 %{_examplesdir}/%{name}-%{version}
 
-%dir %attr(710,root,http) %{cachedir}
-%dir %attr(770,root,http) %{cachedir}/cache
-%dir %attr(770,root,http) %{cachedir}/files
+%dir %attr(770,root,http) %{cachedir}

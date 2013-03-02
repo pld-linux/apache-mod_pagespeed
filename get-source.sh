@@ -6,7 +6,7 @@
 # To see release notes, see this page:
 # https://developers.google.com/speed/docs/mod_pagespeed/release_notes
 
-pkg=modpagespeed
+package=modpagespeed
 baseurl=http://modpagespeed.googlecode.com/svn
 # leave empty to use latest tag, or "trunk" for trunk
 version=
@@ -37,12 +37,14 @@ fi
 if [ "$version" = "trunk" ]; then
 	echo "Using trunk"
 	svnurl=$baseurl/trunk/src
-	tarball=$pkg-$(date +%Y%m%d).tar.xz
+	version=$(date +%Y%m%d)
 else
 	echo "Version: $version"
 	svnurl=$baseurl/tags/$version/src
-	tarball=$pkg-$version.tar.xz
 fi
+
+release_dir=$package-$version
+tarball=$release_dir.tar.xz
 
 if [ -f $tarball -a $force != 1 ]; then
 	echo "Tarball $tarball already exists"
@@ -61,23 +63,20 @@ test -d depot_tools || {
 	# svn co http://src.chromium.org/svn/trunk/tools/depot_tools
 	wget -c https://src.chromium.org/svn/trunk/tools/depot_tools.zip
 	unzip -qq depot_tools.zip
-#	cd depot_tools
-#	svn upgrade
-#	cd ..
 	chmod a+x depot_tools/gclient depot_tools/update_depot_tools
 }
 
 topdir=${PWD:-($pwd)}
 gclient=$topdir/gclient.conf
-install -d $pkg
-cd $pkg
+install -d $package
+cd $package
 
 if [ ! -f $gclient ]; then
 	# create initial config that can be later modified
 	../depot_tools/gclient config $svnurl --gclientfile=$gclient
 fi
 
-cp $gclient .gclient
+cp -p $gclient .gclient
 
 # emulate gclient config, preserving our deps
 sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
@@ -88,6 +87,9 @@ sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
 (cd src && svnversion > LASTCHANGE.in)
 cd ..
 
-tar -cJf $tarball --exclude-vcs $pkg
+cp -al $package/src $release_dir
+XZ_OPT=-e9 tar -caf $tarball --exclude-vcs $release_dir
+rm -rf $release_dir
+
 ../md5 $spec
 ../dropin $tarball &
