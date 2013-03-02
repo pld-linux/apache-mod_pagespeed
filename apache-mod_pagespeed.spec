@@ -25,7 +25,7 @@
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
 Version:	1.3.25.3
-Release:	0.3
+Release:	0.5
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
@@ -33,6 +33,7 @@ Source0:	modpagespeed-%{version}.tar.xz
 Source1:	get-source.sh
 Patch0:		system-libs.patch
 Patch1:		gcc-headers.patch
+Patch2:		bug-632.patch
 URL:		https://developers.google.com/speed/pagespeed/
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
@@ -81,6 +82,7 @@ site is maintained.
 %setup -q -n modpagespeed-%{version}
 %patch0 -p2
 %patch1 -p2
+%patch2 -p2
 
 %build
 # re-gen makefiles
@@ -101,7 +103,7 @@ CXX="%{__cxx}" \
 	-Dsystem_include_path_httpd=%{_includedir}/apache \
 	%{nil}
 
-%{__make} mod_pagespeed \
+%{__make} mod_pagespeed js_minify css_minify_main \
 	BUILDTYPE=%{!?debug:Release}%{?debug:Debug} \
 	%{?with_verbose:V=1} \
 	CC="%{__cc}" \
@@ -115,7 +117,8 @@ CXX="%{__cxx}" \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir},%{cachedir}/{cache,files}}
+install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir},%{_bindir},%{cachedir}}
+
 %{__make} -j1 -C install staging_except_module \
 	APACHE_ROOT=%{_pkgrootdir} \
 	APACHE_MODULES=modules \
@@ -124,13 +127,19 @@ install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir},%{cachedir}/{cache,files
 	MOD_PAGESPEED_STATS_LOG=/var/log/httpd/mod_pagespeed_stats.log \
 	STAGING_DIR=staging
 
-install -p out/Release/libmod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}/mod_%{mod_name}.so
+out=out/%{!?debug:Release}%{?debug:Debug}
+install -p $out/libmod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}/mod_%{mod_name}.so
+install -p $out/js_minify $RPM_BUILD_ROOT%{_bindir}/pagespeed_js_minify
+install -p $out/css_minify_main $RPM_BUILD_ROOT%{_bindir}/pagespeed_css_minify
+
 cd install/staging
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/90_mod_%{mod_name}.conf <<EOF
 LoadModule %{mod_name}_module	modules/mod_%{mod_name}.so
 
 $(cat pagespeed.conf)
 EOF
+
+cp -p pagespeed_libraries.conf $RPM_BUILD_ROOT%{_sysconfdir}/91_mod_%{mod_name}_libraries.conf
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -a mod_pagespeed_example/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
@@ -149,7 +158,9 @@ fi
 %files
 %defattr(644,root,root,755)
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*_mod_%{mod_name}.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*_mod_%{mod_name}_libraries.conf
+%attr(755,root,root) %{_bindir}/pagespeed_css_minify
+%attr(755,root,root) %{_bindir}/pagespeed_js_minify
 %attr(755,root,root) %{_pkglibdir}/mod_%{mod_name}.so
 %{_examplesdir}/%{name}-%{version}
-
 %dir %attr(770,root,http) %{cachedir}

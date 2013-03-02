@@ -1,0 +1,221 @@
+https://code.google.com/p/modpagespeed/issues/detail?id=632
+
+--- modpagespeed/src/install/Makefile~	2013-03-02 13:19:46.590881666 +0200
++++ modpagespeed/src/install/Makefile	2013-03-02 13:56:57.010557918 +0200
+@@ -180,10 +180,10 @@
+ 
+ ifeq ($(STRESS_TEST),1)
+   # remove prefix
+-  STRESS_TEST_SED_PATTERN=^\#STRESS
++  STRESS_TEST_SED_PATTERN=s/^\#STRESS//
+ else
+   # remove whole line
+-  STRESS_TEST_SED_PATTERN=^\#STRESS.*\n
++  STRESS_TEST_SED_PATTERN=/^\#STRESS/d
+ endif
+ 
+ ifeq ($(REWRITE_TEST),1)
+@@ -196,130 +196,130 @@
+ 
+ ifeq ($(COVERAGE_TRACE_TEST),1)
+   # remove coverage prefix
+-  COVERAGE_TEST_SED_PATTERN=^\#COVERAGE
++  COVERAGE_TEST_SED_PATTERN=s/^\#COVERAGE//
+ else
+   # remove coverage lines
+-  COVERAGE_TEST_SED_PATTERN=^\#COVERAGE.*\n
++  COVERAGE_TEST_SED_PATTERN=/^\#COVERAGE/d
+ endif
+ 
+ ifeq ($(PROXY_TEST),1)
+   # remove prefix
+-  PROXY_TEST_SED_PATTERN=^\#PROXY
++  PROXY_TEST_SED_PATTERN=s/^\#PROXY//
+ else
+   # remove whole line
+-  PROXY_TEST_SED_PATTERN=^\#PROXY.*\n
++  PROXY_TEST_SED_PATTERN=/^\#PROXY/d
+ endif
+ 
+ ifeq ($(SLURP_TEST),1)
+   # remove prefix
+-  SLURP_TEST_SED_PATTERN=^\#SLURP
++  SLURP_TEST_SED_PATTERN=s/^\#SLURP//
+ else
+   # remove whole line
+-  SLURP_TEST_SED_PATTERN=^\#SLURP.*\n
++  SLURP_TEST_SED_PATTERN=/^\#SLURP/d
+ endif
+ 
+ ifeq ($(SHARED_MEM_LOCK_TEST),1)
+   # remove prefix
+-  SHARED_MEM_LOCK_TEST_SED_PATTERN=^\#SHARED_MEM_LOCKS
++  SHARED_MEM_LOCK_TEST_SED_PATTERN=s/^\#SHARED_MEM_LOCKS//
+ else
+   # remove whole line
+-  SHARED_MEM_LOCK_TEST_SED_PATTERN=^\#SHARED_MEM_LOCKS.*\n
++  SHARED_MEM_LOCK_TEST_SED_PATTERN=/^\#SHARED_MEM_LOCKS/d
+ endif
+ 
+ ifeq ($(MEMCACHED_TEST),1)
+   # remove prefix
+-  MEMCACHED_TEST_SED_PATTERN=^\#MEMCACHED
++  MEMCACHED_TEST_SED_PATTERN=s/^\#MEMCACHED//
+ else
+   # remove whole line
+-  MEMCACHED_TEST_SED_PATTERN=^\#MEMCACHED.*\n
++  MEMCACHED_TEST_SED_PATTERN=/^\#MEMCACHED/d
+ endif
+ 
+ ifeq ($(MEMCACHE_COVERAGE_TEST),1)
+   # remove prefix
+-  MEMCACHE_COVERAGE_TEST_SED_PATTERN=^\#MEMCACHE_COVERAGE
++  MEMCACHE_COVERAGE_TEST_SED_PATTERN=s/^\#MEMCACHE_COVERAGE//
+ else
+   # remove whole line
+-  MEMCACHE_COVERAGE_TEST_SED_PATTERN=^\#MEMCACHE_COVERAGE.*\n
++  MEMCACHE_COVERAGE_TEST_SED_PATTERN=/^\#MEMCACHE_COVERAGE/d
+ endif
+ 
+ ifeq ($(SPELING_TEST),1)
+   # remove prefix
+-  SPELING_TEST_SED_PATTERN=^\#SPELING
++  SPELING_TEST_SED_PATTERN=s/^\#SPELING//
+ else
+   # remove whole line
+-  SPELING_TEST_SED_PATTERN=^\#SPELING.*\n
++  SPELING_TEST_SED_PATTERN=/^\#SPELING/d
+ endif
+ 
+ ifeq ($(REWRITE_TEST),1)
+   # remove prefix
+-  REWRITE_TEST_SED_PATTERN=^\#REWRITE
++  REWRITE_TEST_SED_PATTERN=s/^\#REWRITE//
+ else
+   # remove whole line
+-  REWRITE_TEST_SED_PATTERN=^\#REWRITE.*\n
++  REWRITE_TEST_SED_PATTERN=/^\#REWRITE/d
+ endif
+ 
+ ifeq ($(GZIP_TEST),1)
+   # remove prefix
+-  GZIP_TEST_SED_PATTERN=^\#GZIP
++  GZIP_TEST_SED_PATTERN=s/^\#GZIP//
+ else
+   # remove whole line
+-  GZIP_TEST_SED_PATTERN=^\#GZIP.*\n
++  GZIP_TEST_SED_PATTERN=/^\#GZIP/d
+ endif
+ 
+ ifeq ($(FURIOUS_GA_TEST),1)
+   # remove prefix
+-  FURIOUS_GA_TEST_SED_PATTERN=^\#FURIOUS_GA
++  FURIOUS_GA_TEST_SED_PATTERN=s/^\#FURIOUS_GA//
+ else
+   # remove whole line
+-  FURIOUS_GA_TEST_SED_PATTERN=^\#FURIOUS_GA.*\n
++  FURIOUS_GA_TEST_SED_PATTERN=/^\#FURIOUS_GA/d
+ endif
+ 
+ ifeq ($(FURIOUS_NO_GA_TEST),1)
+   # remove prefix
+-  FURIOUS_NO_GA_TEST_SED_PATTERN=^\#FURIOUS_NO_GA
++  FURIOUS_NO_GA_TEST_SED_PATTERN=s/^\#FURIOUS_NO_GA//
+ else
+   # remove whole line
+-  FURIOUS_NO_GA_TEST_SED_PATTERN=^\#FURIOUS_NO_GA.*\n
++  FURIOUS_NO_GA_TEST_SED_PATTERN=/^\#FURIOUS_NO_GA/d
+ endif
+ 
+ ifeq ($(HTTPS_TEST),1)
+   # remove prefix
+-  HTTPS_TEST_SED_PATTERN=^\#HTTPS
++  HTTPS_TEST_SED_PATTERN=s/^\#HTTPS//
+ else
+   # remove whole line
+-  HTTPS_TEST_SED_PATTERN=^\#HTTPS.*\n
++  HTTPS_TEST_SED_PATTERN=/^\#HTTPS/d
+ endif
+ 
+ ifeq ($(ALL_DIRECTIVES_TEST),1)
+   # remove prefix
+-  ALL_DIRECTIVES_TEST_SED_PATTERN=^\#ALL_DIRECTIVES
++  ALL_DIRECTIVES_TEST_SED_PATTERN=s/^\#ALL_DIRECTIVES//
+ else
+   # remove whole line
+-  ALL_DIRECTIVES_TEST_SED_PATTERN=^\#ALL_DIRECTIVES.*\n
++  ALL_DIRECTIVES_TEST_SED_PATTERN=/^\#ALL_DIRECTIVES/d
+ endif
+ 
+ ifeq ($(PER_VHOST_STATS_TEST),1)
+   # remove prefix
+-  PER_VHOST_STATS_TEST_SED_PATTERN=^\#PER_VHOST_STATS
++  PER_VHOST_STATS_TEST_SED_PATTERN=s/^\#PER_VHOST_STATS//
+ else
+   # remove whole line
+-  PER_VHOST_STATS_TEST_SED_PATTERN=^\#PER_VHOST_STATS.*\n
++  PER_VHOST_STATS_TEST_SED_PATTERN=/^\#PER_VHOST_STATS/d
+ endif
+ 
+ ifeq ($(NO_PER_VHOST_STATS_TEST),1)
+   # remove prefix
+-  NO_PER_VHOST_STATS_TEST_SED_PATTERN=^\#NO_PER_VHOST_STATS
++  NO_PER_VHOST_STATS_TEST_SED_PATTERN=s/^\#NO_PER_VHOST_STATS//
+ else
+   # remove whole line
+-  NO_PER_VHOST_STATS_TEST_SED_PATTERN=^\#NO_PER_VHOST_STATS.*\n
++  NO_PER_VHOST_STATS_TEST_SED_PATTERN=/^\#NO_PER_VHOST_STATS/d
+ endif
+ 
+ ifeq ($(STATS_LOGGING_TEST),1)
+   # remove prefix
+-  STATS_LOGGING_TEST_SED_PATTERN=^\#STATS_LOGGING
++  STATS_LOGGING_TEST_SED_PATTERN=s/^\#STATS_LOGGING//
+ else
+   # remove whole line
+-  STATS_LOGGING_TEST_SED_PATTERN=^\#STATS_LOGGING.*\n
++  STATS_LOGGING_TEST_SED_PATTERN=/^\#STATS_LOGGING/d
+ endif
+ 
+ # Note that the quoted sed replacement for APACHE_SLURP_DIR_COMMAND is because
+@@ -336,23 +336,23 @@
+ 	    -e "s@# ModPagespeedSlurpDirectory ...@$(APACHE_SLURP_DIR_COMMAND)@g" \
+ 	    -e "s@# ModPagespeedSlurpReadOnly on@$(APACHE_SLURP_READ_ONLY_COMMAND)@g" \
+ 	    -e "s|@@TMP_SLURP_DIR@@|$(TMP_SLURP_DIR)|g" \
+-	    -e "s@$(STRESS_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(REWRITE_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(COVERAGE_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(PROXY_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(SLURP_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(SHARED_MEM_LOCK_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(SPELING_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(MEMCACHED_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(MEMCACHE_COVERAGE_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(GZIP_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(HTTPS_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(FURIOUS_GA_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(FURIOUS_NO_GA_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(ALL_DIRECTIVES_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(PER_VHOST_STATS_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(NO_PER_VHOST_STATS_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(STATS_LOGGING_TEST_SED_PATTERN)@@" \
++	    -e "$(STRESS_TEST_SED_PATTERN)" \
++	    -e "$(REWRITE_TEST_SED_PATTERN)" \
++	    -e "$(COVERAGE_TEST_SED_PATTERN)" \
++	    -e "$(PROXY_TEST_SED_PATTERN)" \
++	    -e "$(SLURP_TEST_SED_PATTERN)" \
++	    -e "$(SHARED_MEM_LOCK_TEST_SED_PATTERN)" \
++	    -e "$(SPELING_TEST_SED_PATTERN)" \
++	    -e "$(MEMCACHED_TEST_SED_PATTERN)" \
++	    -e "$(MEMCACHE_COVERAGE_TEST_SED_PATTERN)" \
++	    -e "$(GZIP_TEST_SED_PATTERN)" \
++	    -e "$(HTTPS_TEST_SED_PATTERN)" \
++	    -e "$(FURIOUS_GA_TEST_SED_PATTERN)" \
++	    -e "$(FURIOUS_NO_GA_TEST_SED_PATTERN)" \
++	    -e "$(ALL_DIRECTIVES_TEST_SED_PATTERN)" \
++	    -e "$(PER_VHOST_STATS_TEST_SED_PATTERN)" \
++	    -e "$(NO_PER_VHOST_STATS_TEST_SED_PATTERN)" \
++	    -e "$(STATS_LOGGING_TEST_SED_PATTERN)" \
+ 		$^ > $@
+ 	! grep '@@' $@  # Make sure we don't have any remaining @@variables@@
+ 
