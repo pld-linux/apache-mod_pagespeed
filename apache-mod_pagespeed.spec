@@ -40,7 +40,6 @@ BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
 BuildRequires:	glib2-devel
 BuildRequires:	gperf
-BuildRequires:	libjpeg-devel
 BuildRequires:	libselinux-devel
 BuildRequires:	libstdc++-devel >= 5:4.1
 BuildRequires:	opencv-devel >= 2.3.1
