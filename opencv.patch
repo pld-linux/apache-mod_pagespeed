@@ -1,0 +1,11 @@
+--- apache-mod_pagespeed/modpagespeed/src/third_party/opencv/opencv.gyp~	2013-03-02 14:27:03.587319085 +0200
++++ apache-mod_pagespeed/modpagespeed/src/third_party/opencv/opencv.gyp	2013-03-02 14:58:26.304299923 +0200
+@@ -190,7 +190,7 @@
+               '<!@(pkg-config --libs-only-L --libs-only-other opencv)',
+             ],
+             'libraries': [
+-              '<!@(pkg-config --libs-only-l opencv)',
++              '<!@(pkg-config --libs opencv)',
+             ],
+           },
+         },

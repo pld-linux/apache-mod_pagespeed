@@ -35,6 +35,7 @@ Source2:	gclient.conf
 Patch0:		system-libs.patch
 Patch1:		gcc-headers.patch
 Patch2:		bug-632.patch
+Patch3:		opencv.patch
 URL:		https://developers.google.com/speed/pagespeed/
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
@@ -83,6 +84,7 @@ site is maintained.
 %patch0 -p2
 %patch1 -p2
 %patch2 -p2
+%patch3 -p3
 
 %build
 # re-gen makefiles
