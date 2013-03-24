@@ -87,9 +87,9 @@ sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
 (cd src && svnversion > LASTCHANGE.in)
 cd ..
 
-cp -al $package/src $release_dir
-XZ_OPT=-e9 tar -caf $tarball --exclude-vcs $release_dir
-rm -rf $release_dir
+XZ_OPT=-e9 \
+tar --transform="s:^$package/src:$release_dir:" \
+	-caf $tarball --exclude-vcs $package/src
 
 ../md5 $spec
 ../dropin $tarball &
