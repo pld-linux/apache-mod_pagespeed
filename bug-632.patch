@@ -1,8 +1,8 @@
 https://code.google.com/p/modpagespeed/issues/detail?id=632
 
---- modpagespeed/src/install/Makefile~	2013-03-02 13:19:46.590881666 +0200
-+++ modpagespeed/src/install/Makefile	2013-03-02 13:56:57.010557918 +0200
-@@ -180,10 +180,10 @@
+--- modpagespeed-1.5.27.2/install/Makefile	2013-05-03 15:33:46.493803262 +0300
++++ modpagespeed-1.5.27.2/install/Makefile	2013-05-03 16:15:38.104831966 +0300
+@@ -186,154 +186,154 @@
  
  ifeq ($(STRESS_TEST),1)
    # remove prefix
@@ -15,7 +15,14 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
  endif
  
  ifeq ($(REWRITE_TEST),1)
-@@ -196,130 +196,130 @@
+   # remove prefix
+-  REWRITE_TEST_SED_PATTERN=^\#REWRITE
++  REWRITE_TEST_SED_PATTERN=s/^\#REWRITE//
+ else
+   # remove whole line
+-  REWRITE_TEST_SED_PATTERN=^\#REWRITE.*\n
++  REWRITE_TEST_SED_PATTERN=/^\#REWRITE/d
+ endif
  
  ifeq ($(COVERAGE_TRACE_TEST),1)
    # remove coverage prefix
@@ -75,6 +82,16 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
    # remove whole line
 -  MEMCACHE_COVERAGE_TEST_SED_PATTERN=^\#MEMCACHE_COVERAGE.*\n
 +  MEMCACHE_COVERAGE_TEST_SED_PATTERN=/^\#MEMCACHE_COVERAGE/d
+ endif
+ 
+ ifeq ($(PURGING_COVERAGE_TEST),1)
+   # remove prefix
+-  PURGING_COVERAGE_TEST_SED_PATTERN=^\#PURGING_COVERAGE
++  PURGING_COVERAGE_TEST_SED_PATTERN=s/^\#PURGING_COVERAGE//
+ else
+   # remove whole line
+-  PURGING_COVERAGE_TEST_SED_PATTERN=^\#PURGING_COVERAGE.*\n
++  PURGING_COVERAGE_TEST_SED_PATTERN=/^\#PURGING_COVERAGE/d
  endif
  
  ifeq ($(SPELING_TEST),1)
@@ -178,7 +195,7 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
  endif
  
  # Note that the quoted sed replacement for APACHE_SLURP_DIR_COMMAND is because
-@@ -336,23 +336,23 @@
+@@ -351,24 +351,24 @@
  	    -e "s@# ModPagespeedSlurpDirectory ...@$(APACHE_SLURP_DIR_COMMAND)@g" \
  	    -e "s@# ModPagespeedSlurpReadOnly on@$(APACHE_SLURP_READ_ONLY_COMMAND)@g" \
  	    -e "s|@@TMP_SLURP_DIR@@|$(TMP_SLURP_DIR)|g" \
@@ -191,6 +208,7 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
 -	    -e "s@$(SPELING_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(MEMCACHED_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(MEMCACHE_COVERAGE_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(PURGING_COVERAGE_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(GZIP_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(HTTPS_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(FURIOUS_GA_TEST_SED_PATTERN)@@" \
@@ -208,6 +226,7 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
 +	    -e "$(SPELING_TEST_SED_PATTERN)" \
 +	    -e "$(MEMCACHED_TEST_SED_PATTERN)" \
 +	    -e "$(MEMCACHE_COVERAGE_TEST_SED_PATTERN)" \
++	    -e "$(PURGING_COVERAGE_TEST_SED_PATTERN)" \
 +	    -e "$(GZIP_TEST_SED_PATTERN)" \
 +	    -e "$(HTTPS_TEST_SED_PATTERN)" \
 +	    -e "$(FURIOUS_GA_TEST_SED_PATTERN)" \

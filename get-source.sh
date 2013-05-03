@@ -84,7 +84,7 @@ sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
 ../depot_tools/gclient sync --nohooks -v
 
 # Populate the LASTCHANGE file template as we will not include VCS info in tarball
-(cd src && svnversion > LASTCHANGE.in)
+(cd src && ./build/lastchange.sh . -o LASTCHANGE.in)
 cd ..
 
 XZ_OPT=-e9 \
