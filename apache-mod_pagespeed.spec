@@ -50,7 +50,7 @@ BuildRequires:	python-devel >= 1:2.6
 # This version of gyp is new enough that it knows to use make for Linux 3.x
 # and FreeBSD, but old enough that 'type': 'settings' works and
 # LINKER_SUPPORTS_ICF hasn't been removed yet.
-BuildRequires:	python-gyp >= 1-1175
+BuildRequires:	python-gyp >= 0.1-0.svn1602.1
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	util-linux
