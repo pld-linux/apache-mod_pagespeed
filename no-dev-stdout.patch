@@ -1,0 +1,29 @@
+--- modpagespeed-1.5.27.2/build/lastchange.sh~	2013-05-03 20:30:46.000000000 +0200
++++ modpagespeed-1.5.27.2/build/lastchange.sh	2013-12-03 11:46:18.047904200 +0100
+@@ -24,7 +24,7 @@
+ SVN_PATH=$1
+ shift 1
+ DEFAULT_FILE=
+-OUT_FILE=/dev/stdout
++OUT_FILE=
+ 
+ while [ $# -ge 2 ]; do
+   case $1 in
+@@ -49,7 +49,15 @@
+ if [ -z $DEFAULT_FILE ]; then
+   KEY='Last Changed Rev: '
+   REVISION=`svn info $SVN_PATH | grep "$KEY" | sed "s#$KEY##"`
+-  echo LASTCHANGE=$REVISION > $OUT_FILE
++  if [ -z "$OUT_FILE" ]; then
++    echo LASTCHANGE=$REVISION
++  else
++    echo LASTCHANGE=$REVISION > $OUT_FILE
++  fi
+ else
+-  cat $DEFAULT_FILE > $OUT_FILE
++  if [ -z "$OUT_FILE" ]; then
++    cat $DEFAULT_FILE
++  else
++    cat $DEFAULT_FILE > $OUT_FILE
++  fi
+ fi
