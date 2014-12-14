@@ -3,6 +3,7 @@
 %bcond_without	verbose		# verbose build (V=1)
 
 # NOTE
+# - relase notes: https://developers.google.com/speed/pagespeed/module/release_notes
 # - http://code.google.com/p/modpagespeed/wiki/HowToBuild
 # - http://wiki.mediatemple.net/w/(dv)_HOWTO:_Install_mod_pagespeed
 # TODO
@@ -12,13 +13,6 @@
 #  "gflags_root": "http://google-gflags.googlecode.com/svn/tags/gflags-1.3/src",
 #  "google_sparsehash_root": "http://google-sparsehash.googlecode.com/svn/tags/sparsehash-1.8.1/src",
 #  protobuf_lite
-
-%if "%{pld_release}" == "ac"
-# add suffix, but allow ccache, etc in ~/.rpmmacros
-%{expand:%%define	__cc	%(echo '%__cc' | sed -e 's,-gcc,-gcc4,')}
-%{expand:%%define	__cxx	%(echo '%__cxx' | sed -e 's,-g++,-g++4,')}
-%{expand:%%define	__cpp	%(echo '%__cpp' | sed -e 's,-gcc,-gcc4,')}
-%endif
 
 %define		mod_name	pagespeed
 %define		apxs		%{_sbindir}/apxs
@@ -57,10 +51,6 @@ BuildRequires:	tar >= 1:1.22
 BuildRequires:	util-linux
 BuildRequires:	xz
 BuildRequires:	zlib-devel
-# gcc4 might be installed, but not current __cc
-%if "%(echo %{cc_version} | cut -d. -f1,2)" < "4.0"
-BuildRequires:	__cc >= 4.0
-%endif
 Requires:	apache(modules-api) = %apache_modules_api
 Requires:	apache-mod_authz_host
 Requires:	apache-mod_headers
