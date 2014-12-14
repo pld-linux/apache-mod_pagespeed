@@ -57,31 +57,35 @@ if python -c "import sys; sys.exit(sys.version[:3] > '2.6')"; then
 	exit 1
 fi
 
-# http://www.chromium.org/developers/how-tos/install-depot-tools
-test -d depot_tools || {
-	# could also checkout:
-	# svn co http://src.chromium.org/svn/trunk/tools/depot_tools
-	wget -c https://src.chromium.org/svn/trunk/tools/depot_tools.zip
-	unzip -qq depot_tools.zip
-	chmod a+x depot_tools/gclient depot_tools/update_depot_tools
-}
+gclient=$(which gclient 2>/dev/null)
+if [ -z "$gclient" ]; then
+	# http://www.chromium.org/developers/how-tos/install-depot-tools
+	test -d depot_tools || {
+		# could also checkout:
+		# svn co http://src.chromium.org/svn/trunk/tools/depot_tools
+		wget -c https://src.chromium.org/svn/trunk/tools/depot_tools.zip
+		unzip -qq depot_tools.zip
+		chmod a+x depot_tools/gclient depot_tools/update_depot_tools
+	}
+	gclient=$topdir/depot_tools/gclient
+fi
 
 topdir=${PWD:-($pwd)}
-gclient=$topdir/gclient.conf
+gclientfile=$topdir/gclient.conf
 install -d $package
 cd $package
 
-if [ ! -f $gclient ]; then
+if [ ! -f $gclientfile ]; then
 	# create initial config that can be later modified
-	../depot_tools/gclient config $svnurl --gclientfile=$gclient
+	$gclient config $svnurl --gclientfile=$gclientfile
 fi
 
-cp -p $gclient .gclient
+cp -p $gclientfile .gclient
 
 # emulate gclient config, preserving our deps
 sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
 
-../depot_tools/gclient sync --nohooks -v
+$gclient sync --nohooks -v
 
 # Populate the LASTCHANGE file template as we will not include VCS info in tarball
 (cd src && ./build/lastchange.sh . -o LASTCHANGE.in)
