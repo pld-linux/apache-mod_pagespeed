@@ -13,6 +13,14 @@ version=
 spec=apache-mod_pagespeed.spec
 force=0
 
+# There are directories we want to strip, but that are unnecessarily required by the build-system
+# So we drop everything but the gyp/gypi files
+almost_strip_dirs() {
+	for dir in "$@"; do
+		find $dir -depth -mindepth 1 '!' '(' -name '*.gyp' -o -name '*.gypi' ')' -print -delete || :
+	done
+}
+
 # abort on errors
 set -e
 # work in package dir
@@ -87,9 +95,20 @@ sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
 
 $gclient sync --nohooks -v
 
+cd src
+
+# clean sources, but preserve .gyp, .gypi
+almost_strip_dirs \
+	third_party/apr/ \
+	third_party/httpd/ \
+	third_party/httpd24/ \
+	third_party/instaweb/ \
+	third_party/openssl/ \
+
 # Populate the LASTCHANGE file template as we will not include VCS info in tarball
-(cd src && ./build/lastchange.sh . -o LASTCHANGE.in)
-cd ..
+./build/lastchange.sh . -o LASTCHANGE.in
+
+cd ../..
 
 XZ_OPT=-e9 \
 tar --transform="s:^$package/src:$release_dir:" \
