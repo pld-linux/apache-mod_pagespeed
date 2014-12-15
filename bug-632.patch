@@ -1,8 +1,19 @@
 https://code.google.com/p/modpagespeed/issues/detail?id=632
 
---- modpagespeed-1.5.27.2/install/Makefile	2013-05-03 15:33:46.493803262 +0300
-+++ modpagespeed-1.5.27.2/install/Makefile	2013-05-03 16:15:38.104831966 +0300
-@@ -186,154 +186,154 @@
+patterns used (vim):
+
+update pattern to remove prefixes
+:%s,\^\\#\([A-Z_]*\)$,s/&//,
+
+update pattern to remove whole lines:
+:%s,\^\\#\([A-Z_]*\)\.\*\\n,/^\\#\1/d,
+
+update subst lines
+:%s#-e "s@\$(\([A-Z_]*_PATTERN\))@@"#-e "$(\1)"#
+
+--- modpagespeed-1.8.31.5/install/Makefile~	2014-12-14 16:05:55.000000000 +0200
++++ modpagespeed-1.8.31.5/install/Makefile	2014-12-14 16:12:55.900374377 +0200
+@@ -190,176 +190,176 @@
  
  ifeq ($(STRESS_TEST),1)
    # remove prefix
@@ -74,6 +85,16 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
 +  MEMCACHED_TEST_SED_PATTERN=/^\#MEMCACHED/d
  endif
  
+ ifeq ($(IPRO_PRESERVE_COVERAGE_TEST),1)
+   # remove prefix
+-  IPRO_PRESERVE_COVERAGE_TEST_SED_PATTERN=^\#IPRO_PRESERVE_COVERAGE
++  IPRO_PRESERVE_COVERAGE_TEST_SED_PATTERN=s/^\#IPRO_PRESERVE_COVERAGE//
+ else
+   # remove whole line
+-  IPRO_PRESERVE_COVERAGE_TEST_SED_PATTERN=^\#IPRO_PRESERVE_COVERAGE.*\n
++  IPRO_PRESERVE_COVERAGE_TEST_SED_PATTERN=/^\#IPRO_PRESERVE_COVERAGE/d
+ endif
+ 
  ifeq ($(MEMCACHE_COVERAGE_TEST),1)
    # remove prefix
 -  MEMCACHE_COVERAGE_TEST_SED_PATTERN=^\#MEMCACHE_COVERAGE
@@ -92,6 +113,24 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
    # remove whole line
 -  PURGING_COVERAGE_TEST_SED_PATTERN=^\#PURGING_COVERAGE.*\n
 +  PURGING_COVERAGE_TEST_SED_PATTERN=/^\#PURGING_COVERAGE/d
+ endif
+ 
+ ifeq ($(IUR_COVERAGE_TEST),1)
+   # remove prefix
+-  IUR_COVERAGE_TEST_SED_PATTERN=^\#IUR_COVERAGE
++  IUR_COVERAGE_TEST_SED_PATTERN=s/^\#IUR_COVERAGE//
+   # remove whole explicit domain authorization line
+-  DOMAIN_AUTH_SED_PATTERN=^\#DOMAIN_AUTH_COVERAGE.*\n
++  DOMAIN_AUTH_SED_PATTERN=/^\#DOMAIN_AUTH_COVERAGE/d
+ else
+   # remove whole line
+-  IUR_COVERAGE_TEST_SED_PATTERN=^\#IUR_COVERAGE.*\n
++  IUR_COVERAGE_TEST_SED_PATTERN=/^\#IUR_COVERAGE/d
+   ifeq ($(COVERAGE_TRACE_TEST),1)
+     # remove prefix for explicit domain authorization line
+-    DOMAIN_AUTH_SED_PATTERN=^\#DOMAIN_AUTH_COVERAGE
++    DOMAIN_AUTH_SED_PATTERN=s/^\#DOMAIN_AUTH_COVERAGE//
+   endif
  endif
  
  ifeq ($(SPELING_TEST),1)
@@ -124,24 +163,24 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
 +  GZIP_TEST_SED_PATTERN=/^\#GZIP/d
  endif
  
- ifeq ($(FURIOUS_GA_TEST),1)
+ ifeq ($(EXPERIMENT_GA_TEST),1)
    # remove prefix
--  FURIOUS_GA_TEST_SED_PATTERN=^\#FURIOUS_GA
-+  FURIOUS_GA_TEST_SED_PATTERN=s/^\#FURIOUS_GA//
+-  EXPERIMENT_GA_TEST_SED_PATTERN=^\#EXPERIMENT_GA
++  EXPERIMENT_GA_TEST_SED_PATTERN=s/^\#EXPERIMENT_GA//
  else
    # remove whole line
--  FURIOUS_GA_TEST_SED_PATTERN=^\#FURIOUS_GA.*\n
-+  FURIOUS_GA_TEST_SED_PATTERN=/^\#FURIOUS_GA/d
+-  EXPERIMENT_GA_TEST_SED_PATTERN=^\#EXPERIMENT_GA.*\n
++  EXPERIMENT_GA_TEST_SED_PATTERN=/^\#EXPERIMENT_GA/d
  endif
  
- ifeq ($(FURIOUS_NO_GA_TEST),1)
+ ifeq ($(EXPERIMENT_NO_GA_TEST),1)
    # remove prefix
--  FURIOUS_NO_GA_TEST_SED_PATTERN=^\#FURIOUS_NO_GA
-+  FURIOUS_NO_GA_TEST_SED_PATTERN=s/^\#FURIOUS_NO_GA//
+-  EXPERIMENT_NO_GA_TEST_SED_PATTERN=^\#EXPERIMENT_NO_GA
++  EXPERIMENT_NO_GA_TEST_SED_PATTERN=s/^\#EXPERIMENT_NO_GA//
  else
    # remove whole line
--  FURIOUS_NO_GA_TEST_SED_PATTERN=^\#FURIOUS_NO_GA.*\n
-+  FURIOUS_NO_GA_TEST_SED_PATTERN=/^\#FURIOUS_NO_GA/d
+-  EXPERIMENT_NO_GA_TEST_SED_PATTERN=^\#EXPERIMENT_NO_GA.*\n
++  EXPERIMENT_NO_GA_TEST_SED_PATTERN=/^\#EXPERIMENT_NO_GA/d
  endif
  
  ifeq ($(HTTPS_TEST),1)
@@ -195,10 +234,10 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
  endif
  
  # Note that the quoted sed replacement for APACHE_SLURP_DIR_COMMAND is because
-@@ -351,24 +351,24 @@
- 	    -e "s@# ModPagespeedSlurpDirectory ...@$(APACHE_SLURP_DIR_COMMAND)@g" \
+@@ -381,27 +381,27 @@
  	    -e "s@# ModPagespeedSlurpReadOnly on@$(APACHE_SLURP_READ_ONLY_COMMAND)@g" \
  	    -e "s|@@TMP_SLURP_DIR@@|$(TMP_SLURP_DIR)|g" \
+ 	    -e "s|@@MEMCACHED_PORT@@|$(MEMCACHED_PORT)|g" \
 -	    -e "s@$(STRESS_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(REWRITE_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(COVERAGE_TEST_SED_PATTERN)@@" \
@@ -207,12 +246,15 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
 -	    -e "s@$(SHARED_MEM_LOCK_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(SPELING_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(MEMCACHED_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(IPRO_PRESERVE_COVERAGE_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(MEMCACHE_COVERAGE_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(PURGING_COVERAGE_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(IUR_COVERAGE_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(DOMAIN_AUTH_SED_PATTERN)@@" \
 -	    -e "s@$(GZIP_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(HTTPS_TEST_SED_PATTERN)@@" \
--	    -e "s@$(FURIOUS_GA_TEST_SED_PATTERN)@@" \
--	    -e "s@$(FURIOUS_NO_GA_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(EXPERIMENT_GA_TEST_SED_PATTERN)@@" \
+-	    -e "s@$(EXPERIMENT_NO_GA_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(ALL_DIRECTIVES_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(PER_VHOST_STATS_TEST_SED_PATTERN)@@" \
 -	    -e "s@$(NO_PER_VHOST_STATS_TEST_SED_PATTERN)@@" \
@@ -225,12 +267,15 @@ https://code.google.com/p/modpagespeed/issues/detail?id=632
 +	    -e "$(SHARED_MEM_LOCK_TEST_SED_PATTERN)" \
 +	    -e "$(SPELING_TEST_SED_PATTERN)" \
 +	    -e "$(MEMCACHED_TEST_SED_PATTERN)" \
++	    -e "$(IPRO_PRESERVE_COVERAGE_TEST_SED_PATTERN)" \
 +	    -e "$(MEMCACHE_COVERAGE_TEST_SED_PATTERN)" \
 +	    -e "$(PURGING_COVERAGE_TEST_SED_PATTERN)" \
++	    -e "$(IUR_COVERAGE_TEST_SED_PATTERN)" \
++	    -e "$(DOMAIN_AUTH_SED_PATTERN)" \
 +	    -e "$(GZIP_TEST_SED_PATTERN)" \
 +	    -e "$(HTTPS_TEST_SED_PATTERN)" \
-+	    -e "$(FURIOUS_GA_TEST_SED_PATTERN)" \
-+	    -e "$(FURIOUS_NO_GA_TEST_SED_PATTERN)" \
++	    -e "$(EXPERIMENT_GA_TEST_SED_PATTERN)" \
++	    -e "$(EXPERIMENT_NO_GA_TEST_SED_PATTERN)" \
 +	    -e "$(ALL_DIRECTIVES_TEST_SED_PATTERN)" \
 +	    -e "$(PER_VHOST_STATS_TEST_SED_PATTERN)" \
 +	    -e "$(NO_PER_VHOST_STATS_TEST_SED_PATTERN)" \
