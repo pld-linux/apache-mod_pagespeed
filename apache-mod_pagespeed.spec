@@ -31,7 +31,7 @@ Patch1:		gcc-headers.patch
 Patch2:		bug-632.patch
 Patch3:		opencv.patch
 Patch4:		no-dev-stdout.patch
-URL:		https://developers.google.com/speed/pagespeed/
+URL:		https://developers.google.com/speed/pagespeed/module
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
 BuildRequires:	glib2-devel
