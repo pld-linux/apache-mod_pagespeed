@@ -21,11 +21,11 @@ Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.2-beta
 # stable: 1.8.31.5
 Version:	1.8.31.5
-Release:	0.6
+Release:	0.7
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
-# Source0-md5:	ce0f27b177fba51f6b9f08fed8134709
+# Source0-md5:	0ec574731370f3da33fd16f536174050
 Source1:	get-source.sh
 Source2:	gclient.conf
 Patch0:		system-libs.patch
@@ -37,6 +37,7 @@ BuildRequires:	apache-devel >= 2.2
 BuildRequires:	bash
 BuildRequires:	glib2-devel
 BuildRequires:	gperf
+BuildRequires:	libicu-devel
 BuildRequires:	libselinux-devel
 BuildRequires:	libstdc++-devel >= 5:4.1
 BuildRequires:	opencv-devel >= 2.3.1
@@ -77,6 +78,12 @@ site is maintained.
 %patch2 -p1
 %patch4 -p1
 
+rm -r third_party/icu/source
+rm -r third_party/icu/genfiles
+install -d third_party/icu/source/{common,i18n}
+ln -s %{_includedir}/unicode third_party/icu/source/i18n/unicode
+ln -s %{_includedir}/unicode third_party/icu/source/common/unicode
+
 %build
 # re-gen makefiles
 CC="%{__cc}" \
@@ -87,10 +94,11 @@ CXX="%{__cxx}" \
 	build/all.gyp \
 	-Duse_openssl=1 \
 	-Duse_system_apache_dev=1 \
+	-Duse_system_icu=1 \
 	-Duse_system_libjpeg=1 \
-	-Duse_system_openssl=1 \
 	-Duse_system_libpng=1 \
 	-Duse_system_opencv=1 \
+	-Duse_system_openssl=1 \
 	-Duse_system_zlib=1 \
 	-Dsystem_include_path_apr=%{_includedir}/apr \
 	-Dsystem_include_path_aprutil=%{_includedir}/apr-util \
