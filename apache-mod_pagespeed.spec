@@ -88,6 +88,7 @@ CXX="%{__cxx}" \
 	-Duse_openssl=1 \
 	-Duse_system_apache_dev=1 \
 	-Duse_system_libjpeg=1 \
+	-Duse_system_openssl=1 \
 	-Duse_system_libpng=1 \
 	-Duse_system_opencv=1 \
 	-Duse_system_zlib=1 \
