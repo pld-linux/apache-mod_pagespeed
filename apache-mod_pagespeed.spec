@@ -21,11 +21,11 @@ Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.2-beta
 # stable: 1.8.31.5
 Version:	1.8.31.5
-Release:	0.7
+Release:	0.10
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
-# Source0-md5:	0ec574731370f3da33fd16f536174050
+# Source0-md5:	9aefd5719a9b7946106b625dc7ecd2aa
 Source1:	get-source.sh
 Source2:	gclient.conf
 Patch0:		system-libs.patch
@@ -44,6 +44,7 @@ BuildRequires:	opencv-devel >= 2.3.1
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	python-devel >= 1:2.6
+BuildRequires:	yasm
 # This version of gyp is new enough that it knows to use make for Linux 3.x
 # and FreeBSD, but old enough that 'type': 'settings' works and
 # LINKER_SUPPORTS_ICF hasn't been removed yet.
@@ -99,6 +100,7 @@ CXX="%{__cxx}" \
 	-Duse_system_libpng=1 \
 	-Duse_system_opencv=1 \
 	-Duse_system_openssl=1 \
+	-Duse_system_yasm=1 \
 	-Duse_system_zlib=1 \
 	-Dsystem_include_path_apr=%{_includedir}/apr \
 	-Dsystem_include_path_aprutil=%{_includedir}/apr-util \

@@ -105,6 +105,15 @@ almost_strip_dirs \
 	third_party/instaweb/ \
 	third_party/openssl/ \
 
+# some more unneeded files for build
+rm -r third_party/chromium/src/net
+rm -r third_party/chromium/src/chrome
+rm -r net/instaweb/rewriter/testdata
+
+# build/linux and third_party/chromium/src/build/linux are same dirs, the latter is not usedc
+#rm -r third_party/chromium/src/build/linux
+#third_party/chromium/src/build/linux
+
 # Populate the LASTCHANGE file template as we will not include VCS info in tarball
 ./build/lastchange.sh . -o LASTCHANGE.in
 
