@@ -7,12 +7,42 @@
 # - http://code.google.com/p/modpagespeed/wiki/HowToBuild
 # - http://wiki.mediatemple.net/w/(dv)_HOWTO:_Install_mod_pagespeed
 # TODO
-# - add unit tests running
-# - possible sysdeps (uses release tags)
-#  "serf_src": "http://serf.googlecode.com/svn/tags/0.3.1",
-#  "gflags_root": "http://google-gflags.googlecode.com/svn/tags/gflags-1.3/src",
-#  "google_sparsehash_root": "http://google-sparsehash.googlecode.com/svn/tags/sparsehash-1.8.1/src",
-#  protobuf_lite
+# - run unit tests
+# third_party libraries:
+# - apr - using system apr package
+# - aprutil - using system apr-util, but from this repo modified apr_memcache2.c
+# - gflags - system package may work
+# - giflib - 4.1.6, no local modifications
+# - google-sparsehash
+# - httpd, httpd24 - using system apache-devel
+# - icu - using system icu
+# - jsoncpp - no local changes
+# - libjpeg_turbo - 1.2.80 with chromium changes (but system lib should be fine)
+# - libpng - no local changes
+# - libwebp - 0.4.0, irrelevant local changes
+# - optipng - 0.7.4, local changes: only the opngreduc component of optipng is included.
+# - protobuf - should be possible to use full protobuf (not lite) to gain same functionality
+# - re2 - should be possible to use system re2
+# - serf - 0.7.2 bunch of google fixes
+# - zlib - 1.2.5, no local changes
+#
+# third_party/chromium/src/base/third_party:
+# - nspr - should be possible to use system lib
+# - dmg_fp
+# - dynamic_annotations
+# - icu - not icu lib, but two files only
+# - valgrind
+#
+# could be possible to use system libs, not packaged in pld:
+# - base64
+# - chromium
+# - chromium_deps
+# - css_parser
+# - domain_registry_provider
+# - instaweb
+# - mod_spdy
+# - modp_b64
+# - rdestl
 
 %define		mod_name	pagespeed
 %define		apxs		%{_sbindir}/apxs
@@ -21,11 +51,11 @@ Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.2-beta
 # stable: 1.8.31.5
 Version:	1.8.31.5
-Release:	0.10
+Release:	0.26
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
-# Source0-md5:	9aefd5719a9b7946106b625dc7ecd2aa
+# Source0-md5:	ea82f2a05f16e9136a0a5d6275621377
 Source1:	get-source.sh
 Source2:	gclient.conf
 Patch0:		system-libs.patch
