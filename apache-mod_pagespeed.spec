@@ -51,7 +51,7 @@ Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.2-beta
 # stable: 1.8.31.5
 Version:	1.8.31.5
-Release:	0.26
+Release:	0.28
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
@@ -61,6 +61,7 @@ Source2:	gclient.conf
 Patch0:		system-libs.patch
 Patch2:		bug-632.patch
 Patch4:		no-dev-stdout.patch
+Patch5:		apache24-config.patch
 URL:		https://developers.google.com/speed/pagespeed/module
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
@@ -108,6 +109,7 @@ site is maintained.
 %patch0 -p2
 %patch2 -p1
 %patch4 -p1
+%patch5 -p1
 
 rm -r third_party/icu/source
 rm -r third_party/icu/genfiles
