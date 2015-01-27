@@ -48,14 +48,14 @@
 %define		apxs		%{_sbindir}/apxs
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
-# beta: 1.9.32.2-beta
-# stable: 1.8.31.5
-Version:	1.8.31.5
-Release:	0.28
+# beta: 1.9.32.x-beta
+# stable: 1.8.31.x
+Version:	1.8.31.6
+Release:	0.29
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
-# Source0-md5:	ea82f2a05f16e9136a0a5d6275621377
+# Source0-md5:	ab144d1d524ce60db44c4dfd6f3f8ef3
 Source1:	get-source.sh
 Source2:	gclient.conf
 Patch0:		system-libs.patch
