@@ -97,6 +97,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		htdocsdir	%(%{apxs} -q htdocsdir 2>/dev/null)
 %define		cachedir	%(%{apxs} -q proxycachedir 2>/dev/null)/mod_%{mod_name}
 
+# disable strip examples, http://lists.pld-linux.org/mailman/pipermail/pld-devel-en/2015-January/024223.html
+%define		_noautostrip	.*%{_examplesdir}/.*
+
 %description
 mod_pagespeed automates the application of those rules in an Apache
 server. HTML, CSS, JavaScript, and images are changed dynamically
