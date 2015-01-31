@@ -13,18 +13,10 @@ version=
 spec=apache-mod_pagespeed.spec
 force=0
 
-# There are directories we want to strip, but that are unnecessarily required by the build-system
-# So we drop everything but the gyp/gypi files
-almost_strip_dirs() {
-	for dir in "$@"; do
-		find $dir -depth -mindepth 1 '!' '(' -name '*.gyp' -o -name '*.gypi' ')' -print -delete || :
-	done
-}
-
 # abort on errors
 set -e
 # work in package dir
-dir=$(dirname "$0")
+dir=$(readlink -f $(dirname "$0"))
 cd "$dir"
 
 if [[ "$1" = *force ]]; then
@@ -38,7 +30,8 @@ fi
 
 if [ -z "$version" ]; then
 	echo "Looking for latest version..."
-	version=$(svn ls $baseurl/tags/ | grep '^[0-9]' | sort -V | tail -n1)
+	# exclude 1.9.x beta
+	version=$(svn ls $baseurl/tags/ | grep '^[0-9]' | grep -vE '^1\.9\.' | sort -V | tail -n1)
 	version=${version%/}
 fi
 
@@ -97,13 +90,7 @@ $gclient sync --nohooks -v
 
 cd src
 
-# clean sources, but preserve .gyp, .gypi
-almost_strip_dirs \
-	third_party/apr/ \
-	third_party/httpd/ \
-	third_party/httpd24/ \
-	third_party/instaweb/ \
-	third_party/openssl/ \
+sh -x $dir/clean-source.sh
 
 # Populate the LASTCHANGE file template as we will not include VCS info in tarball
 ./build/lastchange.sh . -o LASTCHANGE.in

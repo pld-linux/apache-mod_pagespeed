@@ -1,0 +1,191 @@
+--- modpagespeed-1.8.31.5/install/common/pagespeed.conf.template~	2014-12-16 23:05:23.000000000 +0200
++++ modpagespeed-1.8.31.5/install/common/pagespeed.conf.template	2014-12-16 23:24:39.840183325 +0200
+@@ -326,15 +326,33 @@
+     # and change server state, such as statistics, caches, and
+     # messages.  This might be appropriate in an experimental setup.
+     <Location /pagespeed_admin>
+-        Order allow,deny
+-        Allow from localhost
+-        Allow from 127.0.0.1
++        # Apache 2.x
++        <IfModule !mod_authz_core.c>
++            Order allow,deny
++            Allow from localhost
++            Allow from 127.0.0.1
++        </IfModule>
++        # Apache 2.4
++        <IfModule mod_authz_core.c>
++            Require all denied
++            Require local
++        </IfModule>
++
+         SetHandler pagespeed_admin
+     </Location>
+     <Location /pagespeed_global_admin>
+-        Order allow,deny
+-        Allow from localhost
+-        Allow from 127.0.0.1
++        # Apache 2.x
++        <IfModule !mod_authz_core.c>
++            Order allow,deny
++            Allow from localhost
++            Allow from 127.0.0.1
++        </IfModule>
++        # Apache 2.4
++        <IfModule mod_authz_core.c>
++            Require all denied
++            Require local
++        </IfModule>
++
+         SetHandler pagespeed_global_admin
+     </Location>
+ 
+--- modpagespeed-1.8.31.5/install/debug.conf.template~	2014-12-16 23:05:23.000000000 +0200
++++ modpagespeed-1.8.31.5/install/debug.conf.template	2014-12-16 23:29:28.621809636 +0200
+@@ -730,9 +730,18 @@
+ # Enable per-vhost statistics so that tests can be somewhat independent.
+ ModPagespeedUsePerVHostStatistics on
+ <Location /mod_pagespeed_global_statistics>
+-  Order allow,deny
+-  Allow from localhost
+-  Allow from 127.0.0.1
++  # Apache 2.x
++  <IfModule !mod_authz_core.c>
++      Order allow,deny
++      Allow from localhost
++      Allow from 127.0.0.1
++  </IfModule>
++  # Apache 2.4
++  <IfModule mod_authz_core.c>
++      Require all denied
++      Require local
++  </IfModule>
++
+   SetHandler mod_pagespeed_global_statistics
+ </Location>
+ 
+@@ -741,7 +750,6 @@
+ # these are declared so we can test that the handlers still work so
+ # that people upgrading to a new release don't lose funcitonality.
+ <Location /mod_pagespeed_statistics>
+-    Order allow,deny
+     # You may insert other "Allow from" lines to add hosts you want to
+     # allow to look at generated statistics.  Another possibility is
+     # to comment out the "Order" and "Allow" options from the config
+@@ -749,29 +757,67 @@
+     # statistics.  This might be appropriate in an experimental setup or
+     # if the Apache server is protected by a reverse proxy that will
+     # filter URLs in some fashion.
+-    Allow from localhost
+-    Allow from 127.0.0.1
++    # Apache 2.x
++    <IfModule !mod_authz_core.c>
++        Order allow,deny
++        Allow from localhost
++        Allow from 127.0.0.1
++    </IfModule>
++    # Apache 2.4
++    <IfModule mod_authz_core.c>
++        Require all denied
++        Require local
++    </IfModule>
++
+     SetHandler mod_pagespeed_statistics
+ </Location>
+ <Location /pagespeed_console>
+-    Order allow,deny
+-    Allow from localhost
+-    Allow from 127.0.0.1
++    # Apache 2.x
++    <IfModule !mod_authz_core.c>
++        Order allow,deny
++        Allow from localhost
++        Allow from 127.0.0.1
++    </IfModule>
++    # Apache 2.4
++    <IfModule mod_authz_core.c>
++        Require all denied
++        Require local
++    </IfModule>
++
+     SetHandler pagespeed_console
+ </Location>
+ <Location /mod_pagespeed_message>
+-    Order allow,deny
+-    Allow from localhost
+-    Allow from 127.0.0.1
++    # Apache 2.x
++    <IfModule !mod_authz_core.c>
++        Order allow,deny
++        Allow from localhost
++        Allow from 127.0.0.1
++    </IfModule>
++    # Apache 2.4
++    <IfModule mod_authz_core.c>
++        Require all denied
++        Require local
++    </IfModule>
++
+     SetHandler mod_pagespeed_message
+ </Location>
+ 
+ # The handler for "pagespeed_admin" is fixed in name, but you can put
+ # it on any URL path, and everything should work.
+ <Location /alt/admin/path>
+-    Order allow,deny
+-    Allow from localhost
+-    Allow from 127.0.0.1
++    # Apache 2.x
++    <IfModule !mod_authz_core.c>
++        Order allow,deny
++        Allow from localhost
++        Allow from 127.0.0.1
++    </IfModule>
++    # Apache 2.4
++    <IfModule mod_authz_core.c>
++        Require all denied
++        Require local
++    </IfModule>
++
++
+     SetHandler pagespeed_admin
+ </Location>
+ 
+@@ -1078,13 +1124,33 @@
+ #COVERAGE   ModPagespeedCriticalImagesBeaconEnabled false
+ #COVERAGE
+ #COVERAGE   <Location /mod_pagespeed_statistics>
+-#COVERAGE       Order allow,deny
+-#COVERAGE       Allow from localhost
++#COVERAGE       # Apache 2.x
++#COVERAGE       <IfModule !mod_authz_core.c>
++#COVERAGE           Order allow,deny
++#COVERAGE           Allow from localhost
++#COVERAGE           Allow from 127.0.0.1
++#COVERAGE       </IfModule>
++#COVERAGE       # Apache 2.4
++#COVERAGE       <IfModule mod_authz_core.c>
++#COVERAGE           Require all denied
++#COVERAGE           Require local
++#COVERAGE       </IfModule>
++#COVERAGE
+ #COVERAGE       SetHandler mod_pagespeed_statistics
+ #COVERAGE   </Location>
+ #COVERAGE    <Location /mod_pagespeed_message>
+-#COVERAGE        Allow from localhost
+-#COVERAGE        Allow from 127.0.0.1
++#COVERAGE        # Apache 2.x
++#COVERAGE        <IfModule !mod_authz_core.c>
++#COVERAGE            Order allow,deny
++#COVERAGE            Allow from localhost
++#COVERAGE            Allow from 127.0.0.1
++#COVERAGE        </IfModule>
++#COVERAGE        # Apache 2.4
++#COVERAGE        <IfModule mod_authz_core.c>
++#COVERAGE            Require all denied
++#COVERAGE            Require local
++#COVERAGE        </IfModule>
++#COVERAGE
+ #COVERAGE        SetHandler mod_pagespeed_message
+ #COVERAGE    </Location>
+ #COVERAGE </VirtualHost>
