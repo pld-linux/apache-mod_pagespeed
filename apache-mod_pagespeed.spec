@@ -51,7 +51,7 @@ Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.x-beta
 # stable: 1.8.31.x
 Version:	1.8.31.6
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
