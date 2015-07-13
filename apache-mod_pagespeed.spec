@@ -85,6 +85,7 @@ BuildRequires:	tar >= 1:1.22
 BuildRequires:	util-linux
 BuildRequires:	xz
 BuildRequires:	zlib-devel
+BuildConflicts:	depot_tools < 0.1-0.20150708
 Requires:	apache(modules-api) = %apache_modules_api
 Requires:	apache-mod_authz_host
 Requires:	apache-mod_headers
