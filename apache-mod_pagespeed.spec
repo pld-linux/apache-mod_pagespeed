@@ -51,11 +51,11 @@ Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.x-beta
 # stable: 1.9.32.x-stable
 Version:	1.9.32.4
-Release:	0.1
+Release:	1
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
-# Source0-md5:	c902122f7d85d4e43cad92911ad59a85
+# Source0-md5:	c6740a5de9cb7f20f0cf29c8835f6f95
 Source1:	get-source.sh
 Source2:	gclient.conf
 Patch0:		system-libs.patch
@@ -115,7 +115,9 @@ site is maintained.
 %patch4 -p1
 %patch5 -p1
 
+%if 0
 sh -x %{_sourcedir}/clean-source.sh
+%endif
 
 rm -r third_party/icu/source
 rm -r third_party/icu/genfiles
