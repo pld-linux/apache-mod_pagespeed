@@ -27,7 +27,7 @@ almost_strip_dirs \
 rm -r net/instaweb/rewriter/testdata
 rm -r third_party/aprutil/gen
 rm -r third_party/chromium/src/base/test
-rm -r third_party/chromium/src/chrome
+#rm -r third_party/chromium/src/chrome
 rm -r third_party/chromium/src/net
 rm -r third_party/gflags/src/windows
 rm -r third_party/giflib/windows

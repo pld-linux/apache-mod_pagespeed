@@ -49,13 +49,13 @@
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.x-beta
-# stable: 1.8.31.x
-Version:	1.8.31.6
-Release:	2
+# stable: 1.9.32.x-stable
+Version:	1.9.32.4
+Release:	0.1
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
-# Source0-md5:	ab144d1d524ce60db44c4dfd6f3f8ef3
+# Source0-md5:	c902122f7d85d4e43cad92911ad59a85
 Source1:	get-source.sh
 Source2:	gclient.conf
 Patch0:		system-libs.patch
@@ -113,6 +113,8 @@ site is maintained.
 %patch2 -p1
 %patch4 -p1
 %patch5 -p1
+
+sh -x %{_sourcedir}/clean-source.sh
 
 rm -r third_party/icu/source
 rm -r third_party/icu/genfiles
