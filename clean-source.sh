@@ -27,7 +27,6 @@ almost_strip_dirs \
 rm -r net/instaweb/rewriter/testdata
 rm -r third_party/aprutil/gen
 rm -r third_party/chromium/src/base/test
-rm -r third_party/chromium/src/chrome
 rm -r third_party/chromium/src/net
 rm -r third_party/gflags/src/windows
 rm -r third_party/giflib/windows
@@ -41,7 +40,7 @@ rm -r third_party/zlib/{win32,msdos,nintendods,watcom,qnx,amiga}
 find -type d -name testdata | xargs rm -r
 find -type d -name mac | xargs rm -r
 find -type d -name win | xargs rm -r
-find -type d -name test | xargs rm -r
+find -depth -type d -name test | xargs rm -rv
 find third_party -type d -name android | xargs rm -r
 
 find -type f -name '*_test.cc' | xargs rm

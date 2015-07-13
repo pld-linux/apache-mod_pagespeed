@@ -5,12 +5,17 @@
 #
 # To see release notes, see this page:
 # https://developers.google.com/speed/docs/mod_pagespeed/release_notes
+# Bulding from source notes:
+# https://developers.google.com/speed/pagespeed/module/build_mod_pagespeed_from_source
 
 package=modpagespeed
-baseurl=http://modpagespeed.googlecode.com/svn
+repo_url=https://github.com/pagespeed/mod_pagespeed.git
 # leave empty to use latest tag, or "trunk" for trunk
-version=
+# specific version, "latest-stable" or "master" (bleeding edge version)
+version=latest-stable
 spec=apache-mod_pagespeed.spec
+# depth to clone, do not use this as ./build/lastchange.sh uses 'git rev-list --all --count' to count revision
+depth=
 force=0
 
 # abort on errors
@@ -28,24 +33,30 @@ if [ "$1" ]; then
 	version=$1
 fi
 
-if [ -z "$version" ]; then
-	echo "Looking for latest version..."
-	# exclude 1.9.x beta
-	version=$(svn ls $baseurl/tags/ | grep '^[0-9]' | grep -vE '^1\.9\.' | sort -V | tail -n1)
-	version=${version%/}
-fi
+export GIT_DIR=$package/src/.git
 
-if [ "$version" = "trunk" ]; then
-	echo "Using trunk"
-	svnurl=$baseurl/trunk/src
-	version=$(date +%Y%m%d)
+# refs to fetch: master and latest-stable
+refs="refs/heads/master:refs/remotes/origin/master refs/heads/latest-stable:refs/remotes/origin/latest-stable"
+
+if [ ! -d $GIT_DIR ]; then
+	install -d $GIT_DIR
+#	git init --bare
+	git init
+	git remote add origin $repo_url
+	git fetch ${depth:+--depth $depth} origin $refs
 else
-	echo "Version: $version"
-	svnurl=$baseurl/tags/$version/src
+	git fetch origin $refs
 fi
+unset GIT_DIR
+
+cd $package/src
+git checkout $version
+
+version=$(git describe --tags)
+echo "Version: $version"
 
 release_dir=$package-$version
-tarball=$release_dir.tar.xz
+tarball=$dir/$release_dir.tar.xz
 
 if [ -f $tarball -a $force != 1 ]; then
 	echo "Tarball $tarball already exists"
@@ -68,38 +79,41 @@ if [ -z "$gclient" ]; then
 		unzip -qq depot_tools.zip
 		chmod a+x depot_tools/gclient depot_tools/update_depot_tools
 	}
-	gclient=$topdir/depot_tools/gclient
+	gclient=$dir/depot_tools/gclient
 fi
 
-topdir=${PWD:-($pwd)}
-gclientfile=$topdir/gclient.conf
-install -d $package
-cd $package
+gclientfile=$dir/gclient.conf
+cd $dir/$package
 
 if [ ! -f $gclientfile ]; then
 	# create initial config that can be later modified
-	$gclient config $svnurl --gclientfile=$gclientfile
+	$gclient config $repo_url --gclientfile=$gclientfile --unmanaged --name=src
 fi
 
 cp -p $gclientfile .gclient
 
 # emulate gclient config, preserving our deps
-sed -i -re '/"url"/ s,"http[^"]+","'$svnurl'",' .gclient
+sed -i -re '/"url"/ s,"http[^"]+","'$repo_url'",' .gclient
 
 $gclient sync --nohooks -v
 
-cd src
+rm -rf $release_dir
+cp -al src $release_dir
+cd $release_dir
 
 sh -x $dir/clean-source.sh
 
 # Populate the LASTCHANGE file template as we will not include VCS info in tarball
 ./build/lastchange.sh . -o LASTCHANGE.in
 
-cd ../..
+cd ..
 
 XZ_OPT=-e9 \
-tar --transform="s:^$package/src:$release_dir:" \
-	-caf $tarball --exclude-vcs $package/src
+tar -caf $tarball --exclude-vcs $release_dir
+
+rm -rf $release_dir
+
+cd ..
 
 ../md5 $spec
 ../dropin $tarball &

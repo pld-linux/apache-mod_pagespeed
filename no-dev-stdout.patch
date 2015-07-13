@@ -1,5 +1,5 @@
---- modpagespeed-1.5.27.2/build/lastchange.sh~	2013-05-03 20:30:46.000000000 +0200
-+++ modpagespeed-1.5.27.2/build/lastchange.sh	2013-12-03 11:46:18.047904200 +0100
+--- modpagespeed-1.9.32.4/build/lastchange.sh~	2015-07-13 13:24:59.000000000 +0300
++++ modpagespeed-1.9.32.4/build/lastchange.sh	2015-07-13 13:28:24.998692401 +0300
 @@ -24,7 +24,7 @@
  SVN_PATH=$1
  shift 1
@@ -9,10 +9,10 @@
  
  while [ $# -ge 2 ]; do
    case $1 in
-@@ -49,7 +49,15 @@
+@@ -49,8 +49,16 @@
  if [ -z $DEFAULT_FILE ]; then
    KEY='Last Changed Rev: '
-   REVISION=`svn info $SVN_PATH | grep "$KEY" | sed "s#$KEY##"`
+   REVISION=$(git rev-list --all --count)
 -  echo LASTCHANGE=$REVISION > $OUT_FILE
 +  if [ -z "$OUT_FILE" ]; then
 +    echo LASTCHANGE=$REVISION
@@ -27,3 +27,4 @@
 +    cat $DEFAULT_FILE > $OUT_FILE
 +  fi
  fi
+ 
