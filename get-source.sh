@@ -97,18 +97,23 @@ sed -i -re '/"url"/ s,"http[^"]+","'$repo_url'",' .gclient
 
 $gclient sync --nohooks -v
 
-cd src
+rm -rf $release_dir
+cp -al src $release_dir
+cd $release_dir
 
 sh -x $dir/clean-source.sh
 
 # Populate the LASTCHANGE file template as we will not include VCS info in tarball
 ./build/lastchange.sh . -o LASTCHANGE.in
 
-cd ../..
+cd ..
 
 XZ_OPT=-e9 \
-tar --transform="s:^$package/src:$release_dir:" \
-	-caf $tarball --exclude-vcs $package/src
+tar -caf $tarball --exclude-vcs $release_dir
+
+rm -rf $release_dir
+
+cd ..
 
 ../md5 $spec
 ../dropin $tarball &
