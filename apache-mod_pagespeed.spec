@@ -63,6 +63,7 @@ Patch1:		addrinfo.patch
 Patch2:		bug-632.patch
 Patch4:		no-dev-stdout.patch
 Patch5:		apache24-config.patch
+Patch6:		no-force-xxbit.patch
 URL:		https://developers.google.com/speed/pagespeed/module
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
@@ -116,6 +117,7 @@ site is maintained.
 %patch2 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %if 0
 sh -x %{_sourcedir}/clean-source.sh

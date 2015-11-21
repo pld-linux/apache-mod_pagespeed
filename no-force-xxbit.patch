@@ -1,0 +1,57 @@
+diff -ur modpagespeed-1.9.32.4/third_party/boringssl/src/util/32-bit-toolchain.cmake modpagespeed-1.9.32.4.no-arch/third_party/boringssl/src/util/32-bit-toolchain.cmake
+--- modpagespeed-1.9.32.4/third_party/boringssl/src/util/32-bit-toolchain.cmake	2015-07-14 01:16:58.000000000 +0200
++++ modpagespeed-1.9.32.4.no-arch/third_party/boringssl/src/util/32-bit-toolchain.cmake	2015-11-21 15:41:09.890876032 +0100
+@@ -2,6 +2,6 @@
+ set(CMAKE_SYSTEM_VERSION 1)
+ set(CMAKE_SYSTEM_PROCESSOR "x86")
+ 
+-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 -msse2" CACHE STRING "c++ flags")
+-set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -m32 -msse2" CACHE STRING "c flags")
+-set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -m32 -msse2" CACHE STRING "asm flags")
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2" CACHE STRING "c++ flags")
++set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -msse2" CACHE STRING "c flags")
++set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -msse2" CACHE STRING "asm flags")
+diff -ur modpagespeed-1.9.32.4/third_party/chromium/src/build/common.gypi modpagespeed-1.9.32.4.no-arch/third_party/chromium/src/build/common.gypi
+--- modpagespeed-1.9.32.4/third_party/chromium/src/build/common.gypi	2015-07-14 01:16:58.000000000 +0200
++++ modpagespeed-1.9.32.4.no-arch/third_party/chromium/src/build/common.gypi	2015-11-21 15:40:36.750709600 +0100
+@@ -3250,11 +3250,9 @@
+                 # -mmmx allows mmintrin.h to be used for mmx intrinsics.
+                 # video playback is mmx and sse2 optimized.
+                 'cflags': [
+-                  '-m32',
+                   '-mmmx',
+                 ],
+                 'ldflags': [
+-                  '-m32',
+                 ],
+               }],
+             ],
+diff -ur modpagespeed-1.9.32.4/third_party/mod_spdy/src/build/common.gypi modpagespeed-1.9.32.4.no-arch/third_party/mod_spdy/src/build/common.gypi
+--- modpagespeed-1.9.32.4/third_party/mod_spdy/src/build/common.gypi	2015-07-14 01:17:14.000000000 +0200
++++ modpagespeed-1.9.32.4.no-arch/third_party/mod_spdy/src/build/common.gypi	2015-11-21 15:40:45.927420431 +0100
+@@ -640,11 +640,9 @@
+             # -mmmx allows mmintrin.h to be used for mmx intrinsics.
+             # video playback is mmx and sse2 optimized.
+             'cflags': [
+-              '-m32',
+               '-mmmx',
+             ],
+             'ldflags': [
+-              '-m32',
+             ],
+           }],
+           ['linux_fpic==1', {
+diff -ur modpagespeed-1.9.32.4/third_party/zlib/configure modpagespeed-1.9.32.4.no-arch/third_party/zlib/configure
+--- modpagespeed-1.9.32.4/third_party/zlib/configure	2015-07-14 01:17:17.000000000 +0200
++++ modpagespeed-1.9.32.4.no-arch/third_party/zlib/configure	2015-11-21 15:41:44.494402867 +0100
+@@ -108,8 +108,8 @@
+   SFLAGS="${CFLAGS--O3} -fPIC"
+   CFLAGS="${CFLAGS--O3}"
+   if test $build64 -eq 1; then
+-    CFLAGS="${CFLAGS} -m64"
+-    SFLAGS="${SFLAGS} -m64"
++    CFLAGS="${CFLAGS}"
++    SFLAGS="${SFLAGS}"
+   fi
+   if test "${ZLIBGCCWARN}" = "YES"; then
+     CFLAGS="${CFLAGS} -Wall -Wextra -pedantic"
