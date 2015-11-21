@@ -51,7 +51,7 @@ Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.x-beta
 # stable: 1.9.32.x-stable
 Version:	1.9.32.4
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
@@ -59,6 +59,7 @@ Source0:	modpagespeed-%{version}.tar.xz
 Source1:	get-source.sh
 Source2:	gclient.conf
 Patch0:		system-libs.patch
+Patch1:		addrinfo.patch
 Patch2:		bug-632.patch
 Patch4:		no-dev-stdout.patch
 Patch5:		apache24-config.patch
@@ -111,6 +112,7 @@ site is maintained.
 %prep
 %setup -q -n modpagespeed-%{version}
 %patch0 -p2
+%patch1 -p0
 %patch2 -p1
 %patch4 -p1
 %patch5 -p1
