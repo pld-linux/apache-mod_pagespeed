@@ -1,5 +1,5 @@
---- modpagespeed/src/build/install.gyp~	2012-06-24 15:31:45.000000000 +0300
-+++ modpagespeed/src/build/install.gyp	2012-07-07 15:41:33.416812382 +0300
+--- modpagespeed/build/install.gyp~	2012-06-24 15:31:45.000000000 +0300
++++ modpagespeed/build/install.gyp	2012-07-07 15:41:33.416812382 +0300
 @@ -43,7 +43,6 @@
          ],
          'packaging_files_binaries': [
@@ -8,3 +8,18 @@
          ],
          'flock_bash': ['flock', '--', '/tmp/linux_package_lock', 'bash'],
          'deb_build': '<(PRODUCT_DIR)/install/debian/build.sh',
+--- modpagespeed-1.8.31.6/build/pagespeed_overrides.gypi~	2015-01-27 23:50:30.000000000 +0100
++++ modpagespeed-1.8.31.6/build/pagespeed_overrides.gypi	2016-05-29 11:16:44.940121546 +0200
+@@ -44,9 +44,9 @@
+     # (Chromium already has transitive dependencies on these libraries
+     # via gtk). We want to link these libraries into our binaries so
+     # we change the default behavior.
+-    'use_system_libjpeg': 0,
+-    'use_system_libpng': 0,
+-    'use_system_zlib': 0,
++    'use_system_libjpeg': 1,
++    'use_system_libpng': 0,
++    'use_system_zlib': 1,
+ 
+     # We don't use google API keys in the PageSpeed build, so disable them.
+     'use_official_google_api_keys': 0,

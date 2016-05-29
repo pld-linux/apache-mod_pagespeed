@@ -1,0 +1,82 @@
+--- modpagespeed-1.8.31.6/third_party/mod_spdy/src/build/common.gypi~	2015-01-27 23:51:31.000000000 +0100
++++ modpagespeed-1.8.31.6/third_party/mod_spdy/src/build/common.gypi	2016-05-29 11:38:30.139293222 +0200
+@@ -584,11 +584,6 @@
+         },
+         'conditions': [
+           [ 'target_arch=="ia32"', {
+-            'asflags': [
+-              # Needed so that libs with .s files (e.g. libicudata.a)
+-              # are compatible with the general 32-bit-ness.
+-              '-32',
+-            ],
+             # All floating-point computations on x87 happens in 80-bit
+             # precision.  Because the C and C++ language standards allow
+             # the compiler to keep the floating-point values in higher
+@@ -621,28 +616,7 @@
+                   '-msse2',
+                   '-mfpmath=sse',
+                 ],
+-              }, { # else: sse2 disabled
+-                'cflags': [
+-                  '-march=i686',
+-                ],
+               }],
+-              # Install packages have started cropping up with
+-              # different headers between the 32-bit and 64-bit
+-              # versions, so we have to shadow those differences off
+-              # and make sure a 32-bit-on-64-bit build picks up the
+-              # right files.
+-              ['host_arch!="ia32"', {
+-                'include_dirs+': [
+-                  '/usr/include32',
+-                ],
+-              }],
+-            ],
+-            # -mmmx allows mmintrin.h to be used for mmx intrinsics.
+-            # video playback is mmx and sse2 optimized.
+-            'cflags': [
+-              '-mmmx',
+-            ],
+-            'ldflags': [
+             ],
+           }],
+           ['linux_fpic==1', {
+--- modpagespeed-1.8.31.6/third_party/chromium/src/build/common.gypi~	2015-01-27 23:51:10.000000000 +0100
++++ modpagespeed-1.8.31.6/third_party/chromium/src/build/common.gypi	2016-05-29 11:39:54.573657091 +0200
+@@ -3178,11 +3178,6 @@
+           ['target_arch=="ia32"', {
+             'target_conditions': [
+               ['_toolset=="target"', {
+-                'asflags': [
+-                  # Needed so that libs with .s files (e.g. libicudata.a)
+-                  # are compatible with the general 32-bit-ness.
+-                  '-32',
+-                ],
+                 # All floating-point computations on x87 happens in 80-bit
+                 # precision.  Because the C and C++ language standards allow
+                 # the compiler to keep the floating-point values in higher
+@@ -3235,24 +3230,6 @@
+                       '-fuse-ld=gold',
+                     ],
+                   }],
+-                  # Install packages have started cropping up with
+-                  # different headers between the 32-bit and 64-bit
+-                  # versions, so we have to shadow those differences off
+-                  # and make sure a 32-bit-on-64-bit build picks up the
+-                  # right files.
+-                  # For android build, use NDK headers instead of host headers
+-                  ['host_arch!="ia32" and OS!="android"', {
+-                    'include_dirs+': [
+-                      '/usr/include32',
+-                    ],
+-                  }],
+-                ],
+-                # -mmmx allows mmintrin.h to be used for mmx intrinsics.
+-                # video playback is mmx and sse2 optimized.
+-                'cflags': [
+-                  '-mmmx',
+-                ],
+-                'ldflags': [
+                 ],
+               }],
+             ],

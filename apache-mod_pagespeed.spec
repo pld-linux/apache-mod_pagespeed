@@ -1,6 +1,7 @@
 #
 # Conditional build:
 %bcond_without	verbose		# verbose build (V=1)
+%bcond_with	sse2		# use SSE2 instructions
 
 # NOTE
 # - relase notes: https://developers.google.com/speed/pagespeed/module/release_notes
@@ -51,7 +52,7 @@ Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.x-beta
 # stable: 1.9.32.x-stable
 Version:	1.9.32.4
-Release:	3
+Release:	4
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	modpagespeed-%{version}.tar.xz
@@ -64,6 +65,7 @@ Patch2:		bug-632.patch
 Patch4:		no-dev-stdout.patch
 Patch5:		apache24-config.patch
 Patch6:		no-force-xxbit.patch
+Patch7:		no-arch-opt.patch
 URL:		https://developers.google.com/speed/pagespeed/module
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
@@ -71,6 +73,8 @@ BuildRequires:	bash
 BuildRequires:	glib2-devel
 BuildRequires:	gperf
 BuildRequires:	libicu-devel
+BuildRequires:	libjpeg-turbo-devel
+BuildRequires:	libpng-devel
 BuildRequires:	libselinux-devel
 BuildRequires:	libstdc++-devel >= 5:4.1
 BuildRequires:	opencv-devel >= 2.3.1
@@ -112,19 +116,20 @@ site is maintained.
 
 %prep
 %setup -q -n modpagespeed-%{version}
-%patch0 -p2
+%patch0 -p1
 %patch1 -p0
 %patch2 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %if 0
 sh -x %{_sourcedir}/clean-source.sh
 %endif
 
-rm -r third_party/icu/source
-rm -r third_party/icu/genfiles
+%{__rm} -r third_party/icu/source
+%{__rm} -r third_party/icu/genfiles
 install -d third_party/icu/source/{common,i18n}
 ln -s %{_includedir}/unicode third_party/icu/source/i18n/unicode
 ln -s %{_includedir}/unicode third_party/icu/source/common/unicode
@@ -137,6 +142,7 @@ CXX="%{__cxx}" \
 	--format=make \
 	--depth=. \
 	build/all.gyp \
+	%{!?with_sse2:-Ddisable_sse2=1} \
 	-Duse_openssl=1 \
 	-Duse_system_apache_dev=1 \
 	-Duse_system_icu=1 \
@@ -159,8 +165,8 @@ CXX="%{__cxx}" \
 	CC.host="%{__cc}" \
 	CXX.host="%{__cxx}" \
 	LINK.host="%{__cxx}" \
-	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
-	CXXFLAGS="%{rpmcxxflags} %{rpmcppflags}" \
+	CFLAGS="%{rpmcflags} %{rpmcppflags} -DUSE_SYSTEM_LIBJPEG" \
+	CXXFLAGS="%{rpmcxxflags} %{rpmcppflags} -DUSE_SYSTEM_LIBJPEG" \
 	%{nil}
 
 %install
