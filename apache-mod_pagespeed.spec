@@ -52,9 +52,11 @@ Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.x-beta
 # stable: 1.9.32.x-stable
 Version:	1.9.32.4
-Release:	5
+Release:	6
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
+#Source0Download: https://github.com/pagespeed/mod_pagespeed/releases
+#Source0:	https://github.com/pagespeed/mod_pagespeed/archive/%{version}/mod_pagespeed-%{version}.tar.gz
 Source0:	modpagespeed-%{version}.tar.xz
 # Source0-md5:	c6740a5de9cb7f20f0cf29c8835f6f95
 Source1:	get-source.sh
@@ -66,6 +68,7 @@ Patch4:		no-dev-stdout.patch
 Patch5:		apache24-config.patch
 Patch6:		no-force-xxbit.patch
 Patch7:		no-arch-opt.patch
+Patch8:		%{name}-icu.patch
 URL:		https://developers.google.com/speed/pagespeed/module
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
@@ -123,6 +126,7 @@ site is maintained.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %if 0
 sh -x %{_sourcedir}/clean-source.sh
@@ -130,6 +134,7 @@ sh -x %{_sourcedir}/clean-source.sh
 
 %{__rm} -r third_party/icu/source
 %{__rm} -r third_party/icu/genfiles
+# third_party_chromium uses "third_party/icu/..." includes
 install -d third_party/icu/source/{common,i18n}
 ln -s %{_includedir}/unicode third_party/icu/source/i18n/unicode
 ln -s %{_includedir}/unicode third_party/icu/source/common/unicode

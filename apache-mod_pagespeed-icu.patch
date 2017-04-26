@@ -1,0 +1,14 @@
+--- modpagespeed-1.9.32.4/third_party/chromium/src/base/strings/string16.h.orig	2015-07-14 01:17:07.000000000 +0200
++++ modpagespeed-1.9.32.4/third_party/chromium/src/base/strings/string16.h	2017-04-26 20:58:21.381527688 +0200
+@@ -46,7 +46,11 @@
+ 
+ namespace base {
+ 
++#if (__cplusplus >= 201103L)
++typedef char16_t char16;
++#else
+ typedef uint16 char16;
++#endif
+ 
+ // char16 versions of the functions required by string16_char_traits; these
+ // are based on the wide character functions of similar names ("w" or "wcs"
