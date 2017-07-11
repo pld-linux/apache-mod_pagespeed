@@ -36,7 +36,7 @@ fi
 export GIT_DIR=$package/src/.git
 
 # refs to fetch: master and latest-stable
-refs="refs/heads/master:refs/remotes/origin/master refs/heads/latest-stable:refs/remotes/origin/latest-stable"
+refs="refs/heads/master:refs/remotes/origin/master"
 
 if [ ! -d $GIT_DIR ]; then
 	install -d $GIT_DIR
@@ -47,6 +47,15 @@ if [ ! -d $GIT_DIR ]; then
 else
 	git fetch origin $refs
 fi
+
+# if version is *latest*, convert it to closest tag
+case "$version" in
+	*latest*)
+		git fetch --tags
+		version=$(git describe --tags --exclude 'latest-*' --abbrev=0)
+		git checkout $version
+		;;
+esac
 unset GIT_DIR
 
 cd $package/src

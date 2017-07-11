@@ -49,16 +49,14 @@
 %define		apxs		%{_sbindir}/apxs
 Summary:	Apache module for rewriting web pages to reduce latency and bandwidth
 Name:		apache-mod_%{mod_name}
-# beta: 1.9.32.x-beta
-# stable: 1.9.32.x-stable
-Version:	1.9.32.4
-Release:	6
+Version:	1.12.34.2
+Release:	0.1
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
-#Source0Download: https://github.com/pagespeed/mod_pagespeed/releases
+# Source0Download: https://github.com/pagespeed/mod_pagespeed/releases
 #Source0:	https://github.com/pagespeed/mod_pagespeed/archive/%{version}/mod_pagespeed-%{version}.tar.gz
 Source0:	modpagespeed-%{version}.tar.xz
-# Source0-md5:	c6740a5de9cb7f20f0cf29c8835f6f95
+# Source0-md5:	d1701567bf873dfffc458902c2e69c3e
 Source1:	get-source.sh
 Source2:	gclient.conf
 Patch0:		system-libs.patch
@@ -120,24 +118,24 @@ site is maintained.
 %prep
 %setup -q -n modpagespeed-%{version}
 %patch0 -p1
-%patch1 -p0
-%patch2 -p1
-%patch4 -p1
+#%patch1 -p0
+#%patch2 -p1
+#%patch4 -p1
 %patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
+#%patch6 -p1
+#%patch7 -p1
+#%patch8 -p1
 
 %if 0
 sh -x %{_sourcedir}/clean-source.sh
 %endif
 
-%{__rm} -r third_party/icu/source
-%{__rm} -r third_party/icu/genfiles
+#%{__rm} -r third_party/icu/source
+#%{__rm} -r third_party/icu/genfiles
 # third_party_chromium uses "third_party/icu/..." includes
-install -d third_party/icu/source/{common,i18n}
-ln -s %{_includedir}/unicode third_party/icu/source/i18n/unicode
-ln -s %{_includedir}/unicode third_party/icu/source/common/unicode
+#install -d third_party/icu/source/{common,i18n}
+#ln -s %{_includedir}/unicode third_party/icu/source/i18n/unicode
+#ln -s %{_includedir}/unicode third_party/icu/source/common/unicode
 
 %build
 # re-gen makefiles
