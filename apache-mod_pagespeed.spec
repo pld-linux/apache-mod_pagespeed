@@ -52,7 +52,7 @@ Name:		apache-mod_%{mod_name}
 # beta: 1.9.32.x-beta
 # stable: 1.9.32.x-stable
 Version:	1.9.32.4
-Release:	6
+Release:	7
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 #Source0Download: https://github.com/pagespeed/mod_pagespeed/releases
@@ -69,6 +69,8 @@ Patch5:		apache24-config.patch
 Patch6:		no-force-xxbit.patch
 Patch7:		no-arch-opt.patch
 Patch8:		%{name}-icu.patch
+Patch9:		%{name}-format.patch
+Patch10:	serf-openssl1.1.patch
 URL:		https://developers.google.com/speed/pagespeed/module
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
@@ -81,7 +83,7 @@ BuildRequires:	libpng-devel
 BuildRequires:	libselinux-devel
 BuildRequires:	libstdc++-devel >= 5:4.1
 BuildRequires:	opencv-devel >= 2.3.1
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 1.1
 BuildRequires:	pkgconfig
 BuildRequires:	python-devel >= 1:2.6
 BuildRequires:	yasm
@@ -127,6 +129,8 @@ site is maintained.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
+%patch10 -p1
 
 %if 0
 sh -x %{_sourcedir}/clean-source.sh

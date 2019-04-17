@@ -1,0 +1,11 @@
+--- modpagespeed-1.9.32.4/third_party/serf/src/buckets/bwtp_buckets.c.orig	2015-07-14 01:17:19.000000000 +0200
++++ modpagespeed-1.9.32.4/third_party/serf/src/buckets/bwtp_buckets.c	2019-04-16 15:58:06.644879886 +0200
+@@ -228,7 +228,7 @@
+     req_len = apr_snprintf(ctx->req_line, sizeof(ctx->req_line),
+                            "%s %d " "%" APR_UINT64_T_HEX_FMT " %s%s\r\n",
+                            (ctx->type ? "BWM" : "BWH"),
+-                           ctx->channel, calc_header_size(ctx->headers),
++                           ctx->channel, (apr_uint64_t)calc_header_size(ctx->headers),
+                            (ctx->open ? "OPEN " : ""),
+                            ctx->phrase);
+     new_bucket = serf_bucket_simple_copy_create(ctx->req_line, req_len,
