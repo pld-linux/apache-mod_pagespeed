@@ -71,6 +71,7 @@ Patch7:		no-arch-opt.patch
 Patch8:		%{name}-icu.patch
 Patch9:		%{name}-format.patch
 Patch10:	serf-openssl1.1.patch
+Patch11:	%{name}-system-protobuf.patch
 URL:		https://developers.google.com/speed/pagespeed/module
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.2
@@ -85,6 +86,7 @@ BuildRequires:	libstdc++-devel >= 5:4.1
 BuildRequires:	opencv-devel >= 2.3.1
 BuildRequires:	openssl-devel >= 1.1
 BuildRequires:	pkgconfig
+BuildRequires:	protobuf-devel
 BuildRequires:	python-devel >= 1:2.6
 BuildRequires:	yasm
 # This version of gyp is new enough that it knows to use make for Linux 3.x
@@ -131,6 +133,7 @@ site is maintained.
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p1
 
 %if 0
 sh -x %{_sourcedir}/clean-source.sh
@@ -142,6 +145,8 @@ sh -x %{_sourcedir}/clean-source.sh
 install -d third_party/icu/source/{common,i18n}
 ln -s %{_includedir}/unicode third_party/icu/source/i18n/unicode
 ln -s %{_includedir}/unicode third_party/icu/source/common/unicode
+
+%{__rm} -r third_party/protobuf/src
 
 %build
 # re-gen makefiles
@@ -159,6 +164,7 @@ CXX="%{__cxx}" \
 	-Duse_system_libpng=1 \
 	-Duse_system_opencv=1 \
 	-Duse_system_openssl=1 \
+	-Duse_system_protobuf=1 \
 	-Duse_system_yasm=1 \
 	-Duse_system_zlib=1 \
 	-Dsystem_include_path_apr=%{_includedir}/apr \

@@ -1,0 +1,81 @@
+--- modpagespeed-1.9.32.4/third_party/protobuf/protobuf.gyp.orig	2015-07-14 01:17:15.000000000 +0200
++++ modpagespeed-1.9.32.4/third_party/protobuf/protobuf.gyp	2020-07-05 14:36:08.211183327 +0200
+@@ -430,6 +430,33 @@
+           },
+         },
+         {
++          'target_name': 'protobuf_full_do_not_use',
++          'type': 'none',
++          'direct_dependent_settings': {
++            'cflags': [
++              '<!@(pkg-config --cflags protobuf)',
++            ],
++            'defines': [
++              'USE_SYSTEM_PROTOBUF',
++
++              # This macro must be defined to suppress the use
++              # of dynamic_cast<>, which requires RTTI.
++              'GOOGLE_PROTOBUF_NO_RTTI',
++              'GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER',
++            ],
++          },
++          'link_settings': {
++            # Use full protobuf, because vanilla protobuf doesn't have
++            # our custom patch to retain unknown fields in lite mode.
++            'ldflags': [
++              '<!@(pkg-config --libs-only-L --libs-only-other protobuf)',
++            ],
++            'libraries': [
++              '<!@(pkg-config --libs-only-l protobuf)',
++            ],
++          },
++        },
++        {
+           'target_name': 'protoc',
+           'type': 'none',
+           'toolsets': ['host', 'target'],
+--- modpagespeed-1.9.32.4/pagespeed/kernel.gyp.orig	2015-07-14 01:16:53.000000000 +0200
++++ modpagespeed-1.9.32.4/pagespeed/kernel.gyp	2020-07-05 16:37:30.784292901 +0200
+@@ -16,8 +16,14 @@
+   'variables': {
+     'instaweb_root': '..',
+     'protoc_out_dir': '<(SHARED_INTERMEDIATE_DIR)/protoc_out/instaweb',
++    'conditions': [
++      [ 'use_system_protobuf==1', {
++        'protoc_executable': '<!(which protoc)',
++      }, {
+     'protoc_executable':
+         '<(PRODUCT_DIR)/<(EXECUTABLE_PREFIX)protoc<(EXECUTABLE_SUFFIX)',
++      }],
++    ],
+     'data2c_out_dir': '<(SHARED_INTERMEDIATE_DIR)/data2c_out/instaweb',
+     'data2c_exe':
+         '<(PRODUCT_DIR)/<(EXECUTABLE_PREFIX)instaweb_data2c<(EXECUTABLE_SUFFIX)',
+--- modpagespeed-1.9.32.4/net/instaweb/instaweb.gyp.orig	2015-07-14 01:16:53.000000000 +0200
++++ modpagespeed-1.9.32.4/net/instaweb/instaweb.gyp	2020-07-05 16:44:07.851679301 +0200
+@@ -16,8 +16,14 @@
+   'variables': {
+     'instaweb_root': '../..',
+     'protoc_out_dir': '<(SHARED_INTERMEDIATE_DIR)/protoc_out/instaweb',
++    'conditions': [
++      [ 'use_system_protobuf==1', {
++        'protoc_executable': '<!(which protoc)',
++      }, {
+     'protoc_executable':
+         '<(PRODUCT_DIR)/<(EXECUTABLE_PREFIX)protoc<(EXECUTABLE_SUFFIX)',
++      }],
++    ],
+     'data2c_out_dir': '<(SHARED_INTERMEDIATE_DIR)/data2c_out/instaweb',
+     'data2c_exe':
+         '<(PRODUCT_DIR)/<(EXECUTABLE_PREFIX)instaweb_data2c<(EXECUTABLE_SUFFIX)',
+--- modpagespeed-1.9.32.4/net/instaweb/protoc.gypi.orig	2015-07-14 01:16:53.000000000 +0200
++++ modpagespeed-1.9.32.4/net/instaweb/protoc.gypi	2020-07-05 17:00:48.997260176 +0200
+@@ -30,7 +30,7 @@
+       'action': [
+         'bash',
+         '-c',
+-        'cat <(instaweb_root)/<(instaweb_protoc_subdir)/<(RULE_INPUT_NAME) | sed \'s!"third_party/pagespeed!"pagespeed!\' | sed \'s!// \[opensource\] !!\' > <(protoc_out_dir)/<(instaweb_protoc_subdir)/<(RULE_INPUT_ROOT).proto && <(PRODUCT_DIR)/<(EXECUTABLE_PREFIX)protoc<(EXECUTABLE_SUFFIX) --proto_path=<(protoc_out_dir)/ <(protoc_out_dir)/<(instaweb_protoc_subdir)/<(RULE_INPUT_ROOT).proto --cpp_out=<(protoc_out_dir)',
++        'cat <(instaweb_root)/<(instaweb_protoc_subdir)/<(RULE_INPUT_NAME) | sed \'s!"third_party/pagespeed!"pagespeed!\' | sed \'s!// \[opensource\] !!\' > <(protoc_out_dir)/<(instaweb_protoc_subdir)/<(RULE_INPUT_ROOT).proto && <(protoc_executable) --proto_path=<(protoc_out_dir)/ <(protoc_out_dir)/<(instaweb_protoc_subdir)/<(RULE_INPUT_ROOT).proto --cpp_out=<(protoc_out_dir)',
+       ],
+     },
+   ],
